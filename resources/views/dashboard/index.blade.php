@@ -61,18 +61,70 @@
         <ul class="menu">
             <li class="sidebar-title">Menu</li>
             
-            <li
-                class="sidebar-item active ">
+            <li class="sidebar-item active ">
                 <a href="index.html" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
                 </a>
-                
+            </li>
 
+            <li class="sidebar-item ">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Tasks</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item ">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="bi bi-people-fill"></i>
+                    <span>Employees</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item ">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="bi bi-briefcase-fill"></i>
+                    <span>Departments</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item ">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="bi bi-tag-fill"></i>
+                    <span>Roles</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item ">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="bi bi-table"></i>
+                    <span>Presences</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item ">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="bi bi-currency-dollar"></i>
+                    <span>Payrolls</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item ">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="bi bi-shift-fill"></i>
+                    <span>Leave Requests</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item ">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
             </li>
             
-            <li
-                class="sidebar-item  has-sub">
+            <li class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
                     <i class="bi bi-stack"></i>
                     <span>Components</span>
@@ -658,38 +710,6 @@
                     </li>
                     
                 </ul>
-                
-
-            </li>
-            
-            <li class="sidebar-title">Raise Support</li>
-            
-            <li
-                class="sidebar-item  ">
-                <a href="https://zuramai.github.io/mazer/docs" class='sidebar-link'>
-                    <i class="bi bi-life-preserver"></i>
-                    <span>Documentation</span>
-                </a>
-                
-
-            </li>
-            
-            <li
-                class="sidebar-item  ">
-                <a href="https://github.com/zuramai/mazer/blob/main/CONTRIBUTING.md" class='sidebar-link'>
-                    <i class="bi bi-puzzle"></i>
-                    <span>Contribute</span>
-                </a>
-                
-
-            </li>
-            
-            <li
-                class="sidebar-item  ">
-                <a href="https://github.com/zuramai/mazer#donation" class='sidebar-link'>
-                    <i class="bi bi-cash"></i>
-                    <span>Donate</span>
-                </a>
                 
 
             </li>
