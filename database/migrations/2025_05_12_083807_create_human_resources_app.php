@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone');
             $table->string('address');
-            $table->date('birthday');
+            $table->date('birth_date');
             $table->date('hire_date');
             $table->foreignId('department_id')->constrained('departments');
             $table->foreignId('role_id')->constrained('roles');
