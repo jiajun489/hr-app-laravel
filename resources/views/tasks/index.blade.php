@@ -1,3 +1,4 @@
+<!--resource/views/tasks/index.blade.php-->
 @extends('layouts.dashboard')
 
 @section('content')
@@ -6,6 +7,13 @@
         <i class="bi bi-justify fs-3"></i>
     </a>
 </header>
+
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success:</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 
 <div class="page-heading">
     <div class="page-title">
