@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<!-- // resource/views/layouts/dashboard.blade.php -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,8 +71,8 @@
             </li>
 
             <li class="sidebar-item ">
-                <a href="index.html" class='sidebar-link'>
-                    <i class="bi bi-check-circle-fill"></i>
+                <a href="{{ route('tasks.index') }}" class="sidebar-link {{ request()->routeIs('tasks.*') ? 'active' : '' }}">
+                    <i class="bi bi-list-task"></i>
                     <span>Tasks</span>
                 </a>
             </li>
@@ -119,12 +119,16 @@
                 </a>
             </li>
 
-            <li class="sidebar-item ">
-                <a href="index.html" class='sidebar-link'>
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Logout</span>
-                </a>
+            <li class="sidebar-item">
+                <form method="POST" class='sidebar-link' action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="sidebar-link btn btn-link text-start w-100 p-0 m-0">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
             </li>
+
             
             <li class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
