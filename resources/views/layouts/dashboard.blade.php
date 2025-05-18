@@ -72,19 +72,20 @@
             </li>
 
 
-            <li class="sidebar-item ">
-                <a href="{{ route('tasks.index') }}" class="sidebar-link {{ request()->routeIs('tasks.*') ? 'active' : '' }}">
+            <li class="sidebar-item {{ request()->is('tasks*') ? 'active' : '' }}">
+                <a href="{{ route('tasks.index') }}" class='sidebar-link'>
                     <i class="bi bi-list-task"></i>
                     <span>Tasks</span>
                 </a>
             </li>
 
-            <li class="sidebar-item {{ request()->routeIs('employees.*') ? 'active' : '' }}">
-                <a href="{{ route('employees.index') }}" class="sidebar-link">
+            <li class="sidebar-item {{ request()->is('employees*') ? 'active' : '' }}">
+                <a href="{{ route('employees.index') }}" class='sidebar-link'>
                     <i class="bi bi-people-fill"></i>
                     <span>Employees</span>
                 </a>
             </li>
+
 
             <li class="sidebar-item ">
                 <a href="index.html" class='sidebar-link'>
