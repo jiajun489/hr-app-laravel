@@ -1,5 +1,5 @@
 <?php
-
+// database/migrations/2025_05_12_083807_create_human_resources_app.php
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

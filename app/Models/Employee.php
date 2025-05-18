@@ -22,4 +22,25 @@ class Employee extends Model
         'status',
         'salary',
     ];
+
+    protected $casts = [
+        'birth_date' => 'date',
+        'hire_date' => 'date',
+    ];
+
+    /**
+     * Get the department this employee belongs to.
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Get the role this employee belongs to.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

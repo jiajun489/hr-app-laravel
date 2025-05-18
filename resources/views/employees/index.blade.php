@@ -1,4 +1,3 @@
-<!--resource/views/tasks/index.blade.php-->
 @extends('layouts.dashboard')
 
 @section('content')
@@ -19,14 +18,14 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Tasks</h3>
-                <p class="text-subtitle text-muted">You can manage your tasks here</p>
+                <h3>Employees</h3>
+                <p class="text-subtitle text-muted">For employee management</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Tasks</li>
+                        <li class="breadcrumb-item active" aria-current="page">Employees</li>
                     </ol>
                 </nav>
             </div>
@@ -36,48 +35,44 @@
     <section class="section">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Task List</h5>
-                <a href="{{ route('tasks.create') }}" class="btn btn-primary btn-sm">New Task</a>
+                <h5 class="card-title mb-0">Employee List</h5>
+                <a href="{{ route('employees.create') }}" class="btn btn-primary btn-sm">New Employee</a>
             </div>
 
             <div class="card-body">
                 <table class="table table-striped" id="table1">
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Assigned To</th>
-                            <th>Due Date</th>
+                            <th>Fullname</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Role</th>
                             <th>Status</th>
-                            <th>Action</th>
+                            <th>Salary</th>
+                            <th>Options</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($tasks as $task)
+                        @foreach ($employees as $employee)
                             <tr>
-                                <td>{{ $task->title }}</td>
-                                <td>{{ $task->employee->fullname ?? '-' }}</td>
-                                <td>{{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}</td>
+                                <td>{{ $employee->fullname }}</td>
+                                <td>{{ $employee->email }}</td>
+                                <td>{{ $employee->department->name ?? '-' }}</td>
+                                <td>{{ $employee->role->title ?? '-' }}</td>
                                 <td>
-                                    @if ($task->status === 'pending')
-                                        <span class="badge bg-warning">Pending</span>
-                                    @elseif ($task->status === 'completed')
-                                        <span class="badge bg-success">Completed</span>
+                                    @if ($employee->status === 'active')
+                                        <span class="badge bg-success">Active</span>
+                                    @elseif ($employee->status === 'inactive')
+                                        <span class="badge bg-secondary">Inactive</span>
                                     @else
-                                        <span class="badge bg-primary">{{ ucfirst($task->status) }}</span>
+                                        <span class="badge bg-warning text-dark">{{ ucfirst($employee->status) }}</span>
                                     @endif
                                 </td>
+                                <td>${{ number_format($employee->salary, 2) }}</td>
                                 <td>
-                                    <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-info btn-sm">View</a>
-
-                                    @if ($task->status === 'pending')
-                                        <a href="{{ route('tasks.markComplete', $task->id) }}" class="btn btn-success btn-sm">Mark Complete</a>
-                                    @else
-                                        <a href="{{ route('tasks.markPending', $task->id) }}" class="btn btn-warning btn-sm">Mark Pending</a>
-                                    @endif
-
-                                    <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary btn-sm">Edit</a>
-
-                                    <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                    <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info btn-sm">View</a>
+                                    <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this employee?');">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-danger btn-sm">Delete</button>
