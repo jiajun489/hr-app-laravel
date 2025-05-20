@@ -4,6 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PresenceController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -35,10 +40,27 @@ Route::middleware(['auth'])->group(function () {
     /**
      * Employee management routes (CRUD)
      */
-    Route::resource('employees', EmployeeController::class);
+
+    // department routes
+    Route::resource('/departments', DepartmentController::class);
+
+    // employee routes
+    Route::resource('/employees', EmployeeController::class);
     // Optional: mark active/inactive if needed
     // Route::get('/employees/{employee}/activate', [EmployeeController::class, 'markActive'])->name('employees.activate');
     // Route::get('/employees/{employee}/deactivate', [EmployeeController::class, 'markInactive'])->name('employees.deactivate');
+
+    // leave_requests routes
+    Route::resource('/leave_requests', LeaveRequestController::class);
+
+    // payrolls routes
+    Route::resource('/payrolls', PayrollController::class);
+
+    // presence routes
+    Route::resource('/presences', PresenceController::class);
+
+    // role routes
+    Route::resource('/roles', RoleController::class);
 
     /**
      * Task management routes (CRUD + status toggle)

@@ -87,36 +87,36 @@
             </li>
 
 
-            <li class="sidebar-item ">
-                <a href="index.html" class='sidebar-link'>
+            <li class="sidebar-item {{ request()->is('departments*') ? 'active' : '' }}">
+                <a href="{{ route('departments.index') }}" class='sidebar-link'>
                     <i class="bi bi-briefcase-fill"></i>
                     <span>Departments</span>
                 </a>
             </li>
 
-            <li class="sidebar-item ">
-                <a href="index.html" class='sidebar-link'>
+            <li class="sidebar-item {{ request()->is('roles*') ? 'active' : '' }}">
+                <a href="{{ route('roles.index') }}" class='sidebar-link'>
                     <i class="bi bi-tag-fill"></i>
                     <span>Roles</span>
                 </a>
             </li>
 
-            <li class="sidebar-item ">
-                <a href="index.html" class='sidebar-link'>
+            <li class="sidebar-item {{ request()->is('presences*') ? 'active' : '' }}">
+                <a href="{{ route('presences.index') }}" class='sidebar-link'>
                     <i class="bi bi-table"></i>
                     <span>Presences</span>
                 </a>
             </li>
 
-            <li class="sidebar-item ">
-                <a href="index.html" class='sidebar-link'>
+            <li class="sidebar-item {{ request()->is('payrolls*') ? 'active' : '' }}">
+                <a href="{{ route('payrolls.index') }}" class='sidebar-link'>
                     <i class="bi bi-currency-dollar"></i>
                     <span>Payrolls</span>
                 </a>
             </li>
 
-            <li class="sidebar-item ">
-                <a href="index.html" class='sidebar-link'>
+            <li class="sidebar-item {{ request()->is('leave_requests*') ? 'active' : '' }}">
+                <a href="{{ route('leave_requests.index') }}" class='sidebar-link'>
                     <i class="bi bi-shift-fill"></i>
                     <span>Leave Requests</span>
                 </a>
