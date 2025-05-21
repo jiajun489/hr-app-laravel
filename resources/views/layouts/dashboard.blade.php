@@ -758,10 +758,19 @@
 
 <!-- Need: Flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
-    let date = flatpickr(".date", {
-        dateFormat: "Y-m-d"
-    });
+        // Flatpickr for date only (Y-m-d)
+        let date = flatpickr(".date", {
+            dateFormat: "Y-m-d"
+        });
+
+        // Flatpickr for datetime (Y-m-d H:i)
+        let datetime = flatpickr(".datetime", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true
+        });
 </script>
 
 </body>
