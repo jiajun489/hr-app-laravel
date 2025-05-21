@@ -7,60 +7,99 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Reltroner HRM (Human Resource Manager)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Reltroner HRM** is a Laravel 12-based human resource management application, built with the traditional stack of Laravel + Blade + Tailwind + Vite. This project is part of the digital infrastructure of *Reltroner Studio*.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Key Features
 
-## Learning Laravel
+* Employee CRUD
+* Department & Role Management
+* Task Management (CRUD + Status: Complete/Pending)
+* Attendance Tracking
+* Payroll Processing
+* Leave Request Handling
+* Form Validation & Flash Messages
+* Dashboard Statistics
+* Soft Deletes + Eloquent Relationships
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📆 Tech Stack
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* Laravel 12
+* Blade Templating Engine
+* Tailwind CSS + Mazer Template
+* MySQL / MariaDB
+* Laravel Breeze (Auth)
+* Flatpickr, DataTables
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🧠 Design Philosophy
 
-## Laravel Sponsors
+Reltroner HRM is not just a practice project, but a technical pillar of the world-building studio. It integrates principles like:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* Meritocratic systems
+* SDI Structure (Sentient Development Index)
+* Clean and intuitive UI
 
-### Premium Partners
+## 🚿 Bug & Issue Notes
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 1. Sidebar Active Highlight Not Dynamic
 
-## Contributing
+* Sidebar `active` class does not automatically follow the current page.
+* **Solution:** use `request()->routeIs()` helper on sidebar-item.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Date Fields (Birth Date & Hire Date) Empty on Edit
 
-## Code of Conduct
+* Although the data is stored, the date input fields do not display it.
+* **Solution:** ensure `birth_date` & `hire_date` are cast to `date` in the model and formatted with `format('Y-m-d')`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Local Installation
 
-## Security Vulnerabilities
+```bash
+git clone https://github.com/reltroner/reltroner-hrm.git
+cd reltroner-hrm
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+npm install && npm run dev
+php artisan serve
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 📁 Module Structure
+
+```
+- app/Models
+  - Employee.php
+  - Task.php
+  - Department.php
+  - Role.php
+  - Payroll.php
+  - Presence.php
+  - LeaveRequest.php
+- app/Http/Controllers
+  - EmployeeController.php
+  - TaskController.php
+  - DepartmentController.php
+  - RoleController.php
+  - PayrollController.php
+  - PresenceController.php
+  - LeaveRequestController.php
+```
+
+## 🔐 Access & Authentication
+
+* Laravel Breeze is enabled
+* `auth` middleware applied to all routes except login/register
+
+## 👨‍💻 Developer
+
+* **Rei Reltroner** – Founder & Developer
+* [Reltroner Studio](https://reltroner.com) – Digital Worldbuilding & Product Ecosystem
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is built with Laravel and follows the [MIT License](https://opensource.org/licenses/MIT).
