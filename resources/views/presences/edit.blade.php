@@ -3,7 +3,6 @@
 @extends('layouts.dashboard')
 
 @section('content')
-
 <header class="mb-3">
     <a href="#" class="burger-btn d-block d-xl-none">
         <i class="bi bi-justify fs-3"></i>
@@ -15,7 +14,7 @@
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>Edit Presence</h3>
-                <p class="text-subtitle text-muted">Update the presence details</p>
+                <p class="text-subtitle text-muted">You can update the presence details here</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -56,25 +55,28 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="date" class="form-label">Date</label>
-                        <input type="date" class="form-control date @error('date') is-invalid @enderror" id="date" name="date" value="{{ old('date', $presence->date->format('Y-m-d')) }}">
-                        @error('date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="check_in" class="form-label">Check In Time</label>
-                        <input type="time" class="form-control datetime @error('check_in') is-invalid @enderror" id="check_in" name="check_in" value="{{ old('check_in', $presence->check_in) }}">
+                        <label for="check_in" class="form-label">Check In</label>
+                        <input type="text" class="form-control datetime @error('check_in') is-invalid @enderror"
+                               name="check_in" id="check_in" value="{{ old('check_in', $presence->check_in->format('Y-m-d H:i')) }}">
                         @error('check_in')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="check_out" class="form-label">Check Out Time</label>
-                        <input type="time" class="form-control datetime @error('check_out') is-invalid @enderror" id="check_out" name="check_out" value="{{ old('check_out', $presence->check_out) }}">
+                        <label for="check_out" class="form-label">Check Out</label>
+                        <input type="text" class="form-control datetime @error('check_out') is-invalid @enderror"
+                               name="check_out" id="check_out" value="{{ old('check_out', $presence->check_out->format('Y-m-d H:i')) }}">
                         @error('check_out')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="text" class="form-control date @error('date') is-invalid @enderror"
+                               name="date" id="date" value="{{ old('date', $presence->date->format('Y-m-d')) }}">
+                        @error('date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -100,6 +102,5 @@
             </div>
         </div>
     </section>
-
 </div>
 @endsection

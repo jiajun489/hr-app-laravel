@@ -80,15 +80,19 @@ class HRSeeder extends Seeder
 
         // Seed Presences
         for ($i = 0; $i < 30; $i++) {
-            $date = $faker->dateTimeBetween('-30 days', 'now');
+            // Generate check-in between 08:00 to 10:00, 30 days ago until today
+            $checkIn = $faker->dateTimeBetween('-30 days 08:00:00', 'now 10:00:00');
+            $checkOut = (clone $checkIn)->modify('+8 hours');
+            $dateOnly = $checkIn->format('Y-m-d');
+
             DB::table('presences')->insert([
                 'employee_id' => rand(1, 10),
-                'check_in' => $date,
-                'check_out' => $date,
-                'date' => $date,
-                'status' => $faker->randomElement(['present', 'sick', 'leave']),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'check_in'    => $checkIn->format('Y-m-d H:i:s'),
+                'check_out'   => $checkOut->format('Y-m-d H:i:s'),
+                'date'        => $dateOnly,
+                'status'      => $faker->randomElement(['present', 'absent', 'late', 'leave']),
+                'created_at'  => now(),
+                'updated_at'  => now(),
             ]);
         }
 

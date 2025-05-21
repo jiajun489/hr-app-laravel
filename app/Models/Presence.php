@@ -20,9 +20,9 @@ class Presence extends Model
     ];
 
     protected $casts = [
-        'check_in' => 'date',
-        'check_out' => 'date',
-        'date' => 'date',
+        'check_in' => 'datetime:Y-m-d H:i',
+        'check_out' => 'datetime:Y-m-d H:i',
+        'date' => 'date:Y-m-d',
     ];
 
     /**

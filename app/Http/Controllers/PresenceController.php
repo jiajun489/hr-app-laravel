@@ -34,9 +34,9 @@ class PresenceController extends Controller
     {
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
-            'check_in'    => 'required|date',
-            'check_out'   => 'required|date|after_or_equal:check_in',
-            'date'        => 'required|date',
+            'check_in'    => 'required|date_format:Y-m-d H:i',
+            'check_out'   => 'required|date_format:Y-m-d H:i|after_or_equal:check_in',
+            'date'        => 'required|date_format:Y-m-d',
             'status'      => 'required|in:present,absent,late,leave',
         ]);
 
@@ -69,9 +69,9 @@ class PresenceController extends Controller
     {
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
-            'check_in'    => 'required|date',
-            'check_out'   => 'required|date|after_or_equal:check_in',
-            'date'        => 'required|date',
+            'check_in'    => 'required|date_format:Y-m-d H:i',
+            'check_out'   => 'required|date_format:Y-m-d H:i|after_or_equal:check_in',
+            'date'        => 'required|date_format:Y-m-d',
             'status'      => 'required|in:present,absent,late,leave',
         ]);
 
