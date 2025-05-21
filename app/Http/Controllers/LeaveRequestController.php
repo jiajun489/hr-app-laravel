@@ -14,8 +14,8 @@ class LeaveRequestController extends Controller
      */
     public function index()
     {
-        $leaveRequests = LeaveRequest::with('employee')->latest()->get();
-        return view('leave_requests.index', compact('leaveRequests'));
+        $leave_requests = LeaveRequest::with('employee')->latest()->get();
+        return view('leave_requests.index', compact('leave_requests'));
     }
 
     /**
@@ -42,30 +42,30 @@ class LeaveRequestController extends Controller
 
         LeaveRequest::create($request->all());
 
-        return redirect()->route('leave-requests.index')->with('success', 'Leave request submitted successfully.');
+        return redirect()->route('leave_requests.index')->with('success', 'Leave request submitted successfully.');
     }
 
     /**
      * Display the specified leave request.
      */
-    public function show(LeaveRequest $leaveRequest)
+    public function show(LeaveRequest $leave_request)
     {
-        return view('leave_requests.show', compact('leaveRequest'));
+        return view('leave_requests.show', compact('leave_request'));
     }
 
     /**
      * Show the form for editing the specified leave request.
      */
-    public function edit(LeaveRequest $leaveRequest)
+    public function edit(LeaveRequest $leave_request)
     {
         $employees = Employee::all();
-        return view('leave_requests.edit', compact('leaveRequest', 'employees'));
+        return view('leave_requests.edit', compact('leave_request', 'employees'));
     }
 
     /**
      * Update the specified leave request in storage.
      */
-    public function update(Request $request, LeaveRequest $leaveRequest)
+    public function update(Request $request, LeaveRequest $leave_request)
     {
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
@@ -75,18 +75,18 @@ class LeaveRequestController extends Controller
             'status'      => 'required|in:pending,approved,rejected',
         ]);
 
-        $leaveRequest->update($request->all());
+        $leave_request->update($request->all());
 
-        return redirect()->route('leave-requests.index')->with('success', 'Leave request updated successfully.');
+        return redirect()->route('leave_requests.index')->with('success', 'Leave request updated successfully.');
     }
 
     /**
      * Remove the specified leave request from storage.
      */
-    public function destroy(LeaveRequest $leaveRequest)
+    public function destroy(LeaveRequest $leave_request)
     {
-        $leaveRequest->delete();
+        $leave_request->delete();
 
-        return redirect()->route('leave-requests.index')->with('success', 'Leave request deleted successfully.');
+        return redirect()->route('leave_requests.index')->with('success', 'Leave request deleted successfully.');
     }
 }
