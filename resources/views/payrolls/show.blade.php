@@ -34,7 +34,7 @@
                 <h5 class="card-title mb-0">Payroll Detail</h5>
             </div>
 
-            <div class="card-body">
+            <div class="card-body" id="printableArea">
                 <dl class="row">
                     <dt class="col-sm-3">Employee</dt>
                     <dd class="col-sm-9">{{ $payroll->employee->fullname ?? '-' }}</dd>
@@ -54,12 +54,30 @@
                     <dt class="col-sm-3">Payment Date</dt>
                     <dd class="col-sm-9">{{ \Carbon\Carbon::parse($payroll->payment_date)->format('d M Y') }}</dd>
                 </dl>
+            </div>
 
-                <div class="d-flex justify-content-end">
-                    <a href="{{ route('payrolls.index') }}" class="btn btn-secondary">Back to Payroll List</a>
-                </div>
+            <div class="card-footer d-flex justify-content-start gap-2">
+                <button id="btnPrint" class="btn btn-primary">
+                    <i class="bi bi-printer"></i> Print
+                </button>
+                <a href="{{ route('payrolls.index') }}" class="btn btn-secondary">Back to Payroll List</a>
             </div>
         </div>
     </section>
 </div>
+
 @endsection
+
+@push('scripts')
+<script>
+    document.getElementById('btnPrint').addEventListener('click', function () {
+        let printContents = document.getElementById('printableArea').innerHTML;
+        let originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        window.location.reload(); // reload to restore scripts/css
+    });
+</script>
+@endpush

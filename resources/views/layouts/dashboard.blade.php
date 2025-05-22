@@ -1,6 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- // resource/views/layouts/dashboard.blade.php -->
+<style>
+@media print {
+    header, nav, .breadcrumb-header, .btn, .alert, .sidebar, footer {
+        display: none !important;
+    }
+
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black;
+    }
+
+    .table th, .table td {
+        color: black !important;
+        background-color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .container, .card-body {
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .btn {
+        display: none !important;
+    }
+}
+</style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -772,6 +806,7 @@
             time_24hr: true
         });
 </script>
+@stack('scripts')
 
 </body>
 
