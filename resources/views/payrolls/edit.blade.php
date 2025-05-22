@@ -84,8 +84,9 @@
 
                     <div class="mb-3">
                         <label for="net_salary" class="form-label">Net Salary</label>
-                        <input type="number" step="0.01" class="form-control @error('net_salary') is-invalid @enderror"
-                               id="net_salary" name="net_salary" value="{{ old('net_salary', $payroll->net_salary) }}">
+                        <input type="number" step="0.01" readonly class="form-control @error('net_salary') is-invalid @enderror"
+                            id="net_salary" name="net_salary"
+                            value="{{ old('net_salary', $payroll->net_salary ?? '') }}">
                         @error('net_salary')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -109,4 +110,16 @@
         </div>
     </section>
 </div>
+<script>
+    function calculateNetSalary() {
+        const salary = parseFloat(document.getElementById('salary').value) || 0;
+        const bonus = parseFloat(document.getElementById('bonus').value) || 0;
+        const deduction = parseFloat(document.getElementById('deduction').value) || 0;
+        document.getElementById('net_salary').value = (salary + bonus - deduction).toFixed(2);
+    }
+
+    document.getElementById('salary').addEventListener('input', calculateNetSalary);
+    document.getElementById('bonus').addEventListener('input', calculateNetSalary);
+    document.getElementById('deduction').addEventListener('input', calculateNetSalary);
+</script>
 @endsection

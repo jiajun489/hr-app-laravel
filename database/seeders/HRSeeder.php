@@ -66,12 +66,13 @@ class HRSeeder extends Seeder
             $salary = DB::table('employees')->where('id', $i)->value('salary');
             $bonus = $faker->randomFloat(2, 0, 0.2 * $salary);
             $deduction = $faker->randomFloat(2, 0, 0.1 * $salary);
+            $netSalary = round(($salary ?? 0) + ($bonus ?? 0) - ($deduction ?? 0), 2);
             DB::table('payrolls')->insert([
                 'employee_id' => $i,
                 'salary' => $salary,
                 'bonus' => $bonus,
                 'deduction' => $deduction,
-                'net_salary' => $salary + $bonus - $deduction,
+                'net_salary' => $netSalary,
                 'payment_date' => $faker->dateTimeThisYear(),
                 'created_at' => now(),
                 'updated_at' => now(),

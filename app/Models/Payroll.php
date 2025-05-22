@@ -35,4 +35,10 @@ class Payroll extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function getNetSalaryAttribute()
+    {
+        return ($this->salary ?? 0) + ($this->bonus ?? 0) - ($this->deduction ?? 0);
+    }
+
 }
