@@ -54,6 +54,26 @@ class LeaveRequestController extends Controller
     }
 
     /**
+     * Show the form for approving the specified leave request.
+     */
+    public function approve(int $id)
+    {
+        $leave_request = LeaveRequest::findOrFail($id);
+        $leave_request->update(['status' => 'approved']);
+        return redirect()->route('leave_requests.index')->with('success', 'Leave request approved successfully.');
+    }
+
+    /**
+     * Show the form for rejecting the specified leave request.
+     */
+    public function reject(int $id)
+    {
+        $leave_request = LeaveRequest::findOrFail($id);
+        $leave_request->update(['status' => 'rejected']);
+        return redirect()->route('leave_requests.index')->with('success', 'Leave request rejected successfully.');
+    }
+
+    /**
      * Show the form for editing the specified leave request.
      */
     public function edit(LeaveRequest $leave_request)

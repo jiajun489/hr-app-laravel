@@ -42,25 +42,24 @@ Route::middleware(['auth'])->group(function () {
      */
 
     // department routes
-    Route::resource('/departments', DepartmentController::class);
+    Route::resource('/departments', DepartmentController::class);//->middleware(['role:Admin,HR']);
 
     // employee routes
-    Route::resource('/employees', EmployeeController::class);
-    // Optional: mark active/inactive if needed
-    // Route::get('/employees/{employee}/activate', [EmployeeController::class, 'markActive'])->name('employees.activate');
-    // Route::get('/employees/{employee}/deactivate', [EmployeeController::class, 'markInactive'])->name('employees.deactivate');
+    Route::resource('/employees', EmployeeController::class);//->middleware(['role:Admin,HR']);
 
     // leave_requests routes
-    Route::resource('/leave_requests', LeaveRequestController::class);
+    Route::resource('/leave_requests', LeaveRequestController::class);//->middleware(['role:Admin,HR,Developer,Sales, Data Entry']);
+    Route::get('/leave_requests/approve/{id}', [LeaveRequestController::class, 'approve'])->name('leave_requests.approve');
+    Route::get('/leave_requests/reject/{id}', [LeaveRequestController::class, 'reject'])->name('leave_requests.reject');
 
     // payrolls routes
-    Route::resource('/payrolls', PayrollController::class);
+    Route::resource('/payrolls', PayrollController::class);//->middleware(['role:Admin,HR,Developer,Sales, Data Entry']);
 
     // presence routes
-    Route::resource('/presences', PresenceController::class);
+    Route::resource('/presences', PresenceController::class);//->middleware(['role:Admin,HR,Developer,Sales, Data Entry']);
 
     // role routes
-    Route::resource('/roles', RoleController::class);
+    Route::resource('/roles', RoleController::class);//->middleware(['role:Admin,HR']);
 
     /**
      * Task management routes (CRUD + status toggle)
