@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Presence;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PresenceController extends Controller
 {
@@ -14,7 +15,11 @@ class PresenceController extends Controller
      */
     public function index()
     {
-        $presences = Presence::with('employee')->latest()->get();
+        if(session('role') == 'Admin' || session('role') == 'HR Manager'){
+            $presences = Presence::all();
+        }else {
+            $presences = Presence::where('employee_id', session('employee_id'))->get();
+        }
         return view('presences.index', compact('presences'));
     }
 
@@ -32,6 +37,7 @@ class PresenceController extends Controller
      */
     public function store(Request $request)
     {
+        if(session('role') == 'Admin' || session('role') == 'HR Manager'){
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'check_in'    => 'required|date_format:Y-m-d H:i',
@@ -40,7 +46,17 @@ class PresenceController extends Controller
             'status'      => 'required|in:present,absent,late,leave',
         ]);
 
-        Presence::create($request->all());
+            Presence::create($request->all());
+        }else {
+            Presence::create([
+                'employee_id' => session('employee_id'),
+                'check_in'    => Carbon::now()->format('Y-m-d H:i'),
+                'latitude'    => $request->latitude,
+                'longitude'   => $request->longitude,
+                'date'        => Carbon::now()->format('Y-m-d'),
+                'status'      => 'present',
+            ]);
+        }
 
         return redirect()->route('presences.index')->with('success', 'Presence recorded successfully.');
     }
