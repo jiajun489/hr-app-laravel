@@ -37,7 +37,9 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Task List</h5>
-                <a href="{{ route('tasks.create') }}" class="btn btn-primary btn-sm">New Task</a>
+                @if(session('role') == 'Admin' || session('role') == 'HR Manager')
+                    <a href="{{ route('tasks.create') }}" class="btn btn-primary btn-sm">New Task</a>
+                @endif
             </div>
 
             <div class="card-body">
@@ -75,13 +77,15 @@
                                         <a href="{{ route('tasks.markPending', $task->id) }}" class="btn btn-warning btn-sm">Mark Pending</a>
                                     @endif
 
-                                    <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                    @if(session('role') == 'Admin' || session('role') == 'HR Manager')
+                                            <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary btn-sm">Edit</a>
 
-                                    <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
+                                        <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
