@@ -23,7 +23,7 @@ Route::get('/', function () {
  */
 Route::get('/dashboard', function () {
     return view('dashboard.index');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'role:Admin,HR Manager,Developer,Accountant, Data Entry'])->name('dashboard');
 
 /**
  * Authenticated routes group
@@ -42,31 +42,31 @@ Route::middleware(['auth'])->group(function () {
      */
 
     // department routes
-    Route::resource('/departments', DepartmentController::class);//->middleware(['role:Admin,HR']);
+    Route::resource('/departments', DepartmentController::class)->middleware(['role:Admin,HR Manager']);
 
     // employee routes
-    Route::resource('/employees', EmployeeController::class);//->middleware(['role:Admin,HR']);
+    Route::resource('/employees', EmployeeController::class)->middleware(['role:Admin,HR Manager']);
 
     // leave_requests routes
-    Route::resource('/leave_requests', LeaveRequestController::class);//->middleware(['role:Admin,HR,Developer,Sales, Data Entry']);
-    Route::get('/leave_requests/approve/{id}', [LeaveRequestController::class, 'approve'])->name('leave_requests.approve');
-    Route::get('/leave_requests/reject/{id}', [LeaveRequestController::class, 'reject'])->name('leave_requests.reject');
+    Route::resource('/leave_requests', LeaveRequestController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant, Data Entry']);
+    Route::get('/leave_requests/approve/{id}', [LeaveRequestController::class, 'approve'])->name('leave_requests.approve')->middleware(['role:Admin,HR Manager']);
+    Route::get('/leave_requests/reject/{id}', [LeaveRequestController::class, 'reject'])->name('leave_requests.reject')->middleware(['role:Admin,HR Manager']);
 
     // payrolls routes
-    Route::resource('/payrolls', PayrollController::class);//->middleware(['role:Admin,HR,Developer,Sales, Data Entry']);
+    Route::resource('/payrolls', PayrollController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant, Data Entry']);
 
     // presence routes
-    Route::resource('/presences', PresenceController::class);//->middleware(['role:Admin,HR,Developer,Sales, Data Entry']);
+    Route::resource('/presences', PresenceController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant, Data Entry']);
 
     // role routes
-    Route::resource('/roles', RoleController::class);//->middleware(['role:Admin,HR']);
+    Route::resource('/roles', RoleController::class)->middleware(['role:Admin,HR Manager']);
 
     /**
      * Task management routes (CRUD + status toggle)
      */
-    Route::resource('tasks', TaskController::class);
-    Route::get('/tasks/{task}/mark-complete', [TaskController::class, 'markComplete'])->name('tasks.markComplete');
-    Route::get('/tasks/{task}/mark-pending', [TaskController::class, 'markPending'])->name('tasks.markPending');
+    Route::resource('tasks', TaskController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant, Data Entry']);
+    Route::get('/tasks/{task}/mark-complete', [TaskController::class, 'markComplete'])->name('tasks.markComplete')->middleware(['role:Admin,HR Manager,Developer,Accountant, Data Entry']);
+    Route::get('/tasks/{task}/mark-pending', [TaskController::class, 'markPending'])->name('tasks.markPending')->middleware(['role:Admin,HR Manager,Developer,Accountant, Data Entry']);
 });
 
 require __DIR__.'/auth.php';

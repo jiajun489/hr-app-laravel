@@ -97,7 +97,8 @@
     <div class="sidebar-menu">
         <ul class="menu">
             <li class="sidebar-title">Menu</li>
-            
+
+            @if(session('role') == 'Admin' || session('role') == 'HR Manager')
             <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <a href="{{ route('dashboard') }}" class="sidebar-link">
                     <i class="bi bi-grid-fill"></i>
@@ -156,6 +157,46 @@
                 </a>
             </li>
 
+            @endif
+            @if(in_array(session('role'), ['Developer', 'Accountant', 'Data Entry']))
+            <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <a href="{{ route('dashboard') }}" class="sidebar-link">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+
+            <li class="sidebar-item {{ request()->is('tasks*') ? 'active' : '' }}">
+                <a href="{{ route('tasks.index') }}" class='sidebar-link'>
+                    <i class="bi bi-list-task"></i>
+                    <span>Tasks</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item {{ request()->is('presences*') ? 'active' : '' }}">
+                <a href="{{ route('presences.index') }}" class='sidebar-link'>
+                    <i class="bi bi-table"></i>
+                    <span>Presences</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item {{ request()->is('payrolls*') ? 'active' : '' }}">
+                <a href="{{ route('payrolls.index') }}" class='sidebar-link'>
+                    <i class="bi bi-currency-dollar"></i>
+                    <span>Payrolls</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item {{ request()->is('leave_requests*') ? 'active' : '' }}">
+                <a href="{{ route('leave_requests.index') }}" class='sidebar-link'>
+                    <i class="bi bi-shift-fill"></i>
+                    <span>Leave Requests</span>
+                </a>
+            </li>
+
+            @endif
+
             <li class="sidebar-item">
                 <form method="POST" class='sidebar-link' action="{{ route('logout') }}">
                     @csrf
@@ -166,8 +207,7 @@
                 </form>
             </li>
 
-            
-            <li class="sidebar-item  has-sub">
+            <!-- <li class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
                     <i class="bi bi-stack"></i>
                     <span>Components</span>
@@ -755,7 +795,7 @@
                 </ul>
                 
 
-            </li>
+            </li> -->
             
         </ul>
     </div>
