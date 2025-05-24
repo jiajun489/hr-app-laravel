@@ -10,7 +10,11 @@ class PayrollController extends Controller
 {
     public function index()
     {
-        $payrolls = Payroll::with('employee')->latest()->get();
+        if(session('role') == 'Admin' || session('role') == 'HR Manager'){
+            $payrolls = Payroll::all();
+        }else {
+            $payrolls = Payroll::where('employee_id', session('employee_id'))->get();
+        }
         return view('payrolls.index', compact('payrolls'));
     }
 

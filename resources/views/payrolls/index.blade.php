@@ -37,7 +37,9 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Payroll List</h5>
-                <a href="{{ route('payrolls.create') }}" class="btn btn-primary btn-sm">New Payroll</a>
+                @if(session('role') == 'Admin' || session('role') == 'HR Manager')
+                    <a href="{{ route('payrolls.create') }}" class="btn btn-primary btn-sm">New Payroll</a>
+                @endif
             </div>
 
             <div class="card-body">
@@ -64,12 +66,14 @@
                                 <td>{{ \Carbon\Carbon::parse($payroll->payment_date)->format('d M Y') }}</td>
                                 <td>
                                     <a href="{{ route('payrolls.show', $payroll->id) }}" class="btn btn-info btn-sm">View</a>
-                                    <a href="{{ route('payrolls.edit', $payroll->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                    <form action="{{ route('payrolls.destroy', $payroll->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this payroll record?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
+                                    @if(session('role') == 'Admin' || session('role') == 'HR Manager')
+                                        <a href="{{ route('payrolls.edit', $payroll->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                        <form action="{{ route('payrolls.destroy', $payroll->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this payroll record?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
