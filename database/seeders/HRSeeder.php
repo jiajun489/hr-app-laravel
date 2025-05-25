@@ -80,10 +80,20 @@ class HRSeeder extends Seeder
         }
 
         // Seed Presences
-        for ($i = 0; $i < 30; $i++) {
-            // Generate check-in between 08:00 to 10:00, 30 days ago until today
-            $checkIn = $faker->dateTimeBetween('-30 days 08:00:00', 'now 10:00:00');
-            $checkOut = (clone $checkIn)->modify('+8 hours');
+        for ($i = 0; $i < 100; $i++) {
+            // Generate a random month and day
+            $month = rand(1, 12);
+            $day = rand(1, 28); // to avoid invalid dates like Feb 30
+            $year = now()->year;
+
+            // Random hour and minute between 08:00 to 10:00
+            $hour = rand(8, 10);
+            $minute = rand(0, 59);
+            $second = rand(0, 59);
+
+            // Build check-in datetime
+            $checkIn = \Carbon\Carbon::create($year, $month, $day, $hour, $minute, $second);
+            $checkOut = (clone $checkIn)->copy()->addHours(8);
             $dateOnly = $checkIn->format('Y-m-d');
 
             DB::table('presences')->insert([

@@ -1,0 +1,137 @@
+[33mcommit bb0507c511a67bae3164d2943c08fb941a2bf610[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Sun May 25 18:28:36 2025 +0700
+
+    leave request for employee
+
+[33mcommit 296ce801f4eb0abf93e9cf527ff3eba2747cd2a5[m
+Author: Reltroner <127461111+Reltroner@users.noreply.github.com>
+Date:   Sun May 25 17:57:59 2025 +0700
+
+    Update README.md
+
+[33mcommit 8f862c931032a050fa3379345d5d62ddf255005a[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Sat May 24 21:25:33 2025 +0700
+
+    payrolls employee UI
+
+[33mcommit a333c68f53ebc8a7d7f6c1452d7a1cb5cc499588[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Fri May 23 13:41:08 2025 +0700
+
+    presence crud with geolocation fiture
+
+[33mcommit d6436f534131dd984a029081811bf8043594c950[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Fri May 23 11:51:36 2025 +0700
+
+    task list session
+
+[33mcommit f058ba20fec979dff8f15db8e1555f9b024a3c55[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Fri May 23 11:33:12 2025 +0700
+
+    session role middleware
+
+[33mcommit 155fcb47ae993f251b0eee0462c176cbc4a98f58[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Fri May 23 01:57:46 2025 +0700
+
+    leave request approve & reject
+
+[33mcommit 23b31825e0694b320a34138a7636dec255b35e62[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Thu May 22 23:00:53 2025 +0700
+
+    net_salary bug fixed
+
+[33mcommit c7aae8d320cf622ed226594c467064ed4cc71d99[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Thu May 22 21:29:46 2025 +0700
+
+    print button
+
+[33mcommit 148b256844f5decd998d35286ecc6f80a177a8e1[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Wed May 21 21:05:19 2025 +0700
+
+    check_in check_out
+
+[33mcommit 4951eb709c8bd3fe878c4fbb12b0af8bd9f794e6[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Wed May 21 20:01:29 2025 +0700
+
+    presences and roles crud
+
+[33mcommit cec38e28154862211120933c4d5e685d5e8fcf2e[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Wed May 21 16:58:12 2025 +0700
+
+    payroll crud
+
+[33mcommit ea4ca4a749221047c0f9364cec14507490990633[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Wed May 21 16:42:01 2025 +0700
+
+    leave request crud
+
+[33mcommit 437e2fc9274c438ce7c6280c48856f44687d984a[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Wed May 21 15:22:28 2025 +0700
+
+    readme
+
+[33mcommit 7f23e29946ebc4b8e7d86e0c00941156e728ff71[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Tue May 20 12:41:00 2025 +0700
+
+    departement crud
+
+[33mcommit e78b15699548ab86c7330196df1698ea4b57465d[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Mon May 19 00:14:49 2025 +0700
+
+    task sidebar color
+
+[33mcommit 91aa0ea88edd836276f1e8f63f18b32aec40c8e9[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Mon May 19 00:02:24 2025 +0700
+
+    employee CRUD
+
+[33mcommit 2bace6ec44e02c6e8771496684d3b5723665e386[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Sat May 17 22:42:36 2025 +0700
+
+    CRUD Task complete
+
+[33mcommit 685f11dd7eb80a38cb912b4b73082bc59cb96180[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Sat May 17 17:20:30 2025 +0700
+
+    logout
+
+[33mcommit 232c7c8373779aab4242f7638f9175527644d2c4[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Wed May 14 00:22:07 2025 +0700
+
+    checkpoint
+
+[33mcommit 91dc8f3dc0b4806610badbe3873a8a64adaeb408[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Tue May 13 13:21:48 2025 +0700
+
+    checkpoint
+
+[33mcommit f6e92c6eb64865a1a6b88d55df5e1685a717d6a9[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Tue May 13 12:46:55 2025 +0700
+
+    mazer
+
+[33mcommit 968d838b3fb4d889e1bca26de71eb047b75cc649[m
+Author: RaidanRR <edward5raidan5497@gmail.com>
+Date:   Tue May 13 12:07:36 2025 +0700
+
+    first commit

@@ -47,7 +47,9 @@
     <link rel="stylesheet" href="{{ asset('mazer/assets/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('mazer/assets/compiled/css/iconly.css') }}">
     <link rel="stylesheet" href="{{ asset('mazer/assets/extensions/simple-datatables/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('mazer/assets/extensions/table-datatables.css') }}">
+    <link rel="stylesheet" href="{{ asset('mazer/assets/extensions/@icon/dripicons/dripicons.css') }}">
+    <link rel="stylesheet" href="{{ asset('mazer/assets/compiled/css/ui-icons-dripicons.css') }}">
+    <link rel="stylesheet" href="{{ asset('mazer/table-datatable.html') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" >
 </head>
 
@@ -826,6 +828,9 @@
 <script src="{{ asset('mazer/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
 <script src="{{ asset('mazer/assets/static/js/pages/dashboard.js') }}"></script>
 
+<!-- Need: chartJS -->
+<script src="{{ asset('mazer/assets/extensions/chart.js/chart.umd.js') }}"></script>
+
 <!-- Need: Simple Datatables -->
 <script src="{{ asset('mazer/assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
 <script src="{{ asset('mazer/assets/static/js/pages/simple-datatables.js') }}"></script>
@@ -839,12 +844,86 @@
             dateFormat: "Y-m-d"
         });
 
-        // Flatpickr for datetime (Y-m-d H:i)
+        // Flatpickr for datetime (Y-m-d H:i:s)
         let datetime = flatpickr(".datetime", {
             enableTime: true,
-            dateFormat: "Y-m-d H:i",
+            enableSeconds: true,
+            dateFormat: "Y-m-d H:i:s",
             time_24hr: true
         });
+</script>
+<script>
+    const ctxLine = document.getElementById('presence').getContext('2d');
+    const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const presenceChart = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: monthLabels,
+            datasets: []
+        },
+        options: {
+            responsive: true,
+            tension: 0.3,
+            animation: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: 'Latest Presences by Status'
+                }
+            }
+        }
+    });
+
+    function updateData() {
+        fetch('/dashboard/presence')
+            .then(res => res.json())
+            .then(data => {
+                presenceChart.data.datasets = [
+                    {
+                        label: 'Present',
+                        data: data.present,
+                        borderColor: '#4caf50',
+                        backgroundColor: '#4caf50',
+                        fill: false
+                    },
+                    {
+                        label: 'Absent',
+                        data: data.absent,
+                        borderColor: '#f44336',
+                        backgroundColor: '#f44336',
+                        fill: false
+                    },
+                    {
+                        label: 'Late',
+                        data: data.late,
+                        borderColor: '#ff9800',
+                        backgroundColor: '#ff9800',
+                        fill: false
+                    },
+                    {
+                        label: 'Leave',
+                        data: data.leave,
+                        borderColor: '#2196f3',
+                        backgroundColor: '#2196f3',
+                        fill: false
+                    }
+                ];
+                presenceChart.update();
+            });
+    }
+
+    updateData();
 </script>
 @stack('scripts')
 

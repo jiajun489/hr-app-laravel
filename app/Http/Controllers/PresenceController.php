@@ -38,10 +38,16 @@ class PresenceController extends Controller
     public function store(Request $request)
     {
         if(session('role') == 'Admin' || session('role') == 'HR Manager'){
+
+        $request->merge([
+        'check_in'  => date('Y-m-d H:i:s', strtotime($request->check_in)),
+        'check_out' => date('Y-m-d H:i:s', strtotime($request->check_out)),
+        ]);
+
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
-            'check_in'    => 'required|date_format:Y-m-d H:i',
-            'check_out'   => 'required|date_format:Y-m-d H:i|after_or_equal:check_in',
+            'check_in'    => 'required|date_format:Y-m-d H:i:s',
+            'check_out'   => 'required|date_format:Y-m-d H:i:s|after_or_equal:check_in',
             'date'        => 'required|date_format:Y-m-d',
             'status'      => 'required|in:present,absent,late,leave',
         ]);
@@ -50,7 +56,7 @@ class PresenceController extends Controller
         }else {
             Presence::create([
                 'employee_id' => session('employee_id'),
-                'check_in'    => Carbon::now()->format('Y-m-d H:i'),
+                'check_in'    => Carbon::now()->format('Y-m-d H:i:s'),
                 'latitude'    => $request->latitude,
                 'longitude'   => $request->longitude,
                 'date'        => Carbon::now()->format('Y-m-d'),
@@ -83,10 +89,15 @@ class PresenceController extends Controller
      */
     public function update(Request $request, Presence $presence)
     {
+        $request->merge([
+            'check_in' => date('Y-m-d H:i:s', strtotime($request->check_in)),
+            'check_out' => date('Y-m-d H:i:s', strtotime($request->check_out)),
+        ]);
+
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
-            'check_in'    => 'required|date_format:Y-m-d H:i',
-            'check_out'   => 'required|date_format:Y-m-d H:i|after_or_equal:check_in',
+            'check_in'    => 'required|date_format:Y-m-d H:i:s',
+            'check_out'   => 'required|date_format:Y-m-d H:i:s|after_or_equal:check_in',
             'date'        => 'required|date_format:Y-m-d',
             'status'      => 'required|in:present,absent,late,leave',
         ]);

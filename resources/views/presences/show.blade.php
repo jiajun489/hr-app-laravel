@@ -45,10 +45,10 @@
                     <dd class="col-sm-9">{{ \Carbon\Carbon::parse($presence->date)->format('d M Y') }}</dd>
 
                     <dt class="col-sm-3">Check In</dt>
-                    <dd class="col-sm-9">{{ \Carbon\Carbon::parse($presence->check_in)->format('H:i') }}</dd>
+                    <dd class="col-sm-9">{{ \Carbon\Carbon::parse($presence->check_in)->format('H:i:s') }}</dd>
 
                     <dt class="col-sm-3">Check Out</dt>
-                    <dd class="col-sm-9">{{ \Carbon\Carbon::parse($presence->check_out)->format('H:i') }}</dd>
+                    <dd class="col-sm-9">{{ \Carbon\Carbon::parse($presence->check_out)->format('H:i:s') }}</dd>
 
                     <dt class="col-sm-3">Status</dt>
                     <dd class="col-sm-9">
