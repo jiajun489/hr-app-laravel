@@ -38,6 +38,7 @@
                 <form action="{{ route('leave_requests.store') }}" method="POST">
                     @csrf
 
+                    @if(session('role') == 'Admin' || session('role') == 'HR Manager')
                     <div class="mb-3">
                         <label for="employee_id" class="form-label">Employee</label>
                         <select name="employee_id" id="employee_id" class="form-select @error('employee_id') is-invalid @enderror">
@@ -52,6 +53,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    @endif
 
                     <div class="mb-3">
                         <label for="leave_type" class="form-label">Leave Type</label>
@@ -80,6 +82,7 @@
                         @enderror
                     </div>
 
+                    @if(session('role') == 'Admin' || session('role') == 'HR Manager')
                     <div class="mb-3">
                         <label for="status" class="form-label">Status</label>
                         <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
@@ -91,6 +94,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    @endif
 
                     <div class="d-flex justify-content-end">
                         <a href="{{ route('leave_requests.index') }}" class="btn btn-secondary me-2">Cancel</a>

@@ -49,7 +49,9 @@
                             <th>Start Date</th>
                             <th>End Date</th>
                             <th>Status</th>
+                            @if(session('role') == 'Admin' || session('role') == 'HR Manager')
                             <th>Options</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -71,18 +73,20 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <a href="{{ route('leave_requests.show', $leave->id) }}" class="btn btn-info btn-sm">View</a>
-                                    @if ($leave->status === 'pending' || $leave->status === 'rejected')
-                                        <a href="{{ route('leave_requests.approve', $leave->id) }}" class="btn btn-success btn-sm">Approve</a>
-                                    @else
-                                        <a href="{{ route('leave_requests.reject', $leave->id) }}" class="btn btn-danger btn-sm">Rejected</a>
+                                    @if(session('role') == 'Admin' || session('role') == 'HR Manager')
+                                        <a href="{{ route('leave_requests.show', $leave->id) }}" class="btn btn-info btn-sm">View</a>
+                                        @if ($leave->status === 'pending' || $leave->status === 'rejected')
+                                            <a href="{{ route('leave_requests.approve', $leave->id) }}" class="btn btn-success btn-sm">Approve</a>
+                                        @else
+                                            <a href="{{ route('leave_requests.reject', $leave->id) }}" class="btn btn-danger btn-sm">Rejected</a>
+                                        @endif
+                                        <a href="{{ route('leave_requests.edit', $leave->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                        <form action="{{ route('leave_requests.destroy', $leave->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this request?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
                                     @endif
-                                    <a href="{{ route('leave_requests.edit', $leave->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                    <form action="{{ route('leave_requests.destroy', $leave->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this request?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
                                 </td>
                             </tr>
                         @endforeach

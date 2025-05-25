@@ -14,7 +14,11 @@ class LeaveRequestController extends Controller
      */
     public function index()
     {
-        $leave_requests = LeaveRequest::with('employee')->latest()->get();
+        if(session('role') == 'Admin' || session('role') == 'HR Manager'){
+            $leave_requests = LeaveRequest::all();
+        }else {
+            $leave_requests = LeaveRequest::where('employee_id', session('employee_id'))->get();
+        }
         return view('leave_requests.index', compact('leave_requests'));
     }
 
@@ -32,15 +36,29 @@ class LeaveRequestController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'leave_type'  => 'required|string|max:255',
-            'start_date'  => 'required|date',
-            'end_date'    => 'required|date|after_or_equal:start_date',
-            'status'      => 'required|in:pending,approved,rejected',
-        ]);
+        if(session('role') == 'Admin' || session('role') == 'HR Manager'){
+            $request->validate([
+                'employee_id' => 'required|exists:employees,id',
+                'leave_type'  => 'required|string|max:255',
+                'start_date'  => 'required|date',
+                'end_date'    => 'required|date|after_or_equal:start_date',
+                'status'      => 'required|in:pending,approved,rejected',
+            ]);
 
-        LeaveRequest::create($request->all());
+            $request->merge([
+            'status'      => 'pending',
+            ]);
+
+            LeaveRequest::create($request->all());
+        }else {
+            LeaveRequest::create([
+                'employee_id' => session('employee_id'),
+                'leave_type'  => $request->leave_type,
+                'start_date'  => $request->start_date,
+                'end_date'    => $request->end_date,
+                'status'      => 'pending',
+            ]);
+        }
 
         return redirect()->route('leave_requests.index')->with('success', 'Leave request submitted successfully.');
     }
