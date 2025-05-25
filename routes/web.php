@@ -22,7 +22,7 @@ Route::get('/', function () {
  * Dashboard page (now uses controller to send data)
  */
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified', 'role:Admin,HR Manager,Developer,Accountant,Data Entry'])
+    ->middleware(['auth', 'verified', 'role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer'])
     ->name('dashboard');
 
 Route::get('/dashboard/presence', [DashboardController::class, 'presence']);
@@ -48,7 +48,7 @@ Route::middleware(['auth'])->group(function () {
      * Leave requests routes
      */
     Route::resource('/leave_requests', LeaveRequestController::class)
-        ->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry']);
+        ->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
     Route::get('/leave_requests/approve/{id}', [LeaveRequestController::class, 'approve'])
         ->name('leave_requests.approve')
         ->middleware(['role:Admin,HR Manager']);
@@ -59,8 +59,8 @@ Route::middleware(['auth'])->group(function () {
     /**
      * Payroll and presence routes
      */
-    Route::resource('/payrolls', PayrollController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry']);
-    Route::resource('/presences', PresenceController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry']);
+    Route::resource('/payrolls', PayrollController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
+    Route::resource('/presences', PresenceController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
 
     /**
      * Role management routes
@@ -70,9 +70,9 @@ Route::middleware(['auth'])->group(function () {
     /**
      * Task management routes
      */
-    Route::resource('tasks', TaskController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry']);
-    Route::get('/tasks/{task}/mark-complete', [TaskController::class, 'markComplete'])->name('tasks.markComplete')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry']);
-    Route::get('/tasks/{task}/mark-pending', [TaskController::class, 'markPending'])->name('tasks.markPending')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry']);
+    Route::resource('tasks', TaskController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
+    Route::get('/tasks/{task}/mark-complete', [TaskController::class, 'markComplete'])->name('tasks.markComplete')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
+    Route::get('/tasks/{task}/mark-pending', [TaskController::class, 'markPending'])->name('tasks.markPending')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
 });
 
 require __DIR__.'/auth.php';

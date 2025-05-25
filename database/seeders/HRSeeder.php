@@ -1,5 +1,5 @@
 <?php
-
+// database/seeders/HRSeeder.php
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -23,10 +23,15 @@ class HRSeeder extends Seeder
 
         // Seed Roles
         $roles = [
-            ['id' => 1, 'title' => 'Software Engineer', 'description' => 'Develops systems.', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'title' => 'HR Manager', 'description' => 'Manages HR policies.', 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 3, 'title' => 'Accountant', 'description' => 'Handles accounting.', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 1, 'title' => 'Accountant',       'description' => 'Handles accounting tasks.',           'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'title' => 'Admin',            'description' => 'Administrator with full access.',     'created_at' => now(), 'updated_at' => now()],
+            ['id' => 3, 'title' => 'Animator',         'description' => 'Creates visual animations.',          'created_at' => now(), 'updated_at' => now()],
+            ['id' => 4, 'title' => 'Data Entry',       'description' => 'Inputs and manages raw data.',        'created_at' => now(), 'updated_at' => now()],
+            ['id' => 5, 'title' => 'HR Manager',       'description' => 'Manages HR policies and staff.',      'created_at' => now(), 'updated_at' => now()],
+            ['id' => 6, 'title' => 'Marketer',        'description' => 'Develops and executes marketing plans.', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 7, 'title' => 'Developer',        'description' => 'Develops and maintains software systems.', 'created_at' => now(), 'updated_at' => now()],
         ];
+
         DB::table('roles')->insert($roles);
 
         // Seed Employees

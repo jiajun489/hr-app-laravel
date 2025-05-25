@@ -88,7 +88,7 @@
                     <h4>Latest Presences</h4>
                 </div>
                 <div class="card-body">
-                    <canvas id="presence"></canvas>
+                    <canvas id="presence" height="100"></canvas>
                 </div>
             </div>
         </div>

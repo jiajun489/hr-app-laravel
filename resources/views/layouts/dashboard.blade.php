@@ -61,7 +61,7 @@
     <div class="sidebar-header position-relative">
         <div class="d-flex justify-content-between align-items-center">
             <div class="logo">
-                <a href="index.html"><img src="{{ asset('mazer/assets/compiled/svg/logo.svg') }}" alt="Logo" srcset=""></a>
+                <a href="index.html"><img src="{{ asset('images/reltroner-hrm1.png') }}" alt="Logo" srcset=""></a>
             </div>
             <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
@@ -160,7 +160,7 @@
             </li>
 
             @endif
-            @if(in_array(session('role'), ['Developer', 'Accountant', 'Data Entry']))
+            @if(in_array(session('role'), ['Developer', 'Accountant', 'Data Entry', 'Animator', 'Marketer']))
             <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                 <a href="{{ route('dashboard') }}" class="sidebar-link">
                     <i class="bi bi-grid-fill"></i>
