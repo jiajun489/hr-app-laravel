@@ -57,8 +57,8 @@ Reltroner HRM is not just a practice project, but a technical pillar of the worl
 ## 🚀 Local Installation
 
 ```bash
-git clone https://github.com/reltroner/reltroner-hrm.git
-cd reltroner-hrm
+git clone https://github.com/reltroner/reltroner-hr-app.git
+cd reltroner-hr-app
 composer install
 cp .env.example .env
 php artisan key:generate
