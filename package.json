@@ -2,8 +2,8 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "build": "vite build && node copy-manifest.js"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
