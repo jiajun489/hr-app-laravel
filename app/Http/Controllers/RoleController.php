@@ -76,6 +76,13 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        // Protect critical roles
+        $protectedRoles = ['Admin', 'HR Manager'];
+
+        if (in_array($role->title, $protectedRoles)) {
+            return redirect()->route('roles.index')->with('error', "You cannot delete the '{$role->title}' role.");
+        }
+
         $role->delete();
 
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
