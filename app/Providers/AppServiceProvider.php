@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
         // Optional: support hot module replacement during local dev
         if ($this->app->environment('local')) {
             Vite::useHotFile(public_path('hot'));
+        }
+
+        if (env('APP_ENV') === 'production') {
+        URL::forceScheme('https');
         }
     }
 }

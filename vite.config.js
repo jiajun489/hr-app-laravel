@@ -15,8 +15,7 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
-            // 🔥 Ini yang paling penting:
-            buildDirectory: 'build', // mengatur Laravel untuk mencari di public/build
+            buildDirectory: 'build' // PENTING agar Laravel baca di public/build
         }),
     ],
     base: '/build/',
