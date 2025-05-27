@@ -91,7 +91,27 @@ php artisan serve
 ## 🔐 Access & Authentication
 
 * Laravel Breeze is enabled
-* `auth` middleware applied to all routes except login/register
+* All routes are protected with `auth` middleware (except login/register)  
+* Role-based authorization demo (Admin vs Employee)
+
+## 🔐 Access for Recruiters / HRD – Demo Accounts
+
+For testing and demo purposes, you can log in as:
+
+- **Admin:**  
+  user: `admin@example.com`  
+  password: `password`
+
+- **Employee:**  
+  user: `developer@example.com`  
+  password: `password`
+
+---
+
+🌍 **Live Demo:** [hrm.reltroner.com](https://hrm.reltroner.com)  
+💻 **Source:** [github.com/Reltroner/reltroner-hr-app.git](https://github.com/Reltroner/reltroner-hr-app.git)
+
+---
 
 ## 👨‍💻 Developer
 
