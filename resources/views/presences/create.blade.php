@@ -107,12 +107,12 @@
                 <div class="mb-3"><b>Note</b> : Please turn on location permission on your device.</div>
                 <div class="mb-3">
                     <label for="latitude" class="form-label">Latitude</label>
-                    <input type="text" class="form-control"
+                    <input type="text" readonly class="form-control"
                            name="latitude" id="latitude" value="{{ old('latitude') }}" required>
                 </div>
                 <div class="mb-3">
                     <label for="longitude" class="form-label">Longitude</label>
-                    <input type="text" class="form-control"
+                    <input type="text" readonly class="form-control"
                            name="longitude" id="longitude" value="{{ old('longitude') }}" required>
                 </div>
                 <div class="mb-3">
