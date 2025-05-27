@@ -41,22 +41,27 @@ class PresenceController extends Controller
 
         $request->merge([
         'check_in'  => date('Y-m-d H:i:s', strtotime($request->check_in)),
-        'check_out' => date('Y-m-d H:i:s', strtotime($request->check_out)),
         ]);
 
         $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'check_in'    => 'required|date_format:Y-m-d H:i:s',
-            'check_out'   => 'required|date_format:Y-m-d H:i:s|after_or_equal:check_in',
             'date'        => 'required|date_format:Y-m-d',
             'status'      => 'required|in:present,absent,late,leave',
         ]);
 
-            Presence::create($request->all());
+            Presence::create([
+            'employee_id' => $request->employee_id,
+            'check_in'    => $request->check_in,
+            'check_out'   => null, // biarkan kosong/null
+            'date'        => $request->date,
+            'status'      => $request->status,
+        ]);
         }else {
             Presence::create([
                 'employee_id' => session('employee_id'),
                 'check_in'    => Carbon::now()->format('Y-m-d H:i:s'),
+                'check_out'   => null, 
                 'latitude'    => $request->latitude,
                 'longitude'   => $request->longitude,
                 'date'        => Carbon::now()->format('Y-m-d'),

@@ -55,7 +55,13 @@
                                 <td>{{ $presence->employee->fullname ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($presence->date)->format('d M Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($presence->check_in)->format('H:i:s') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($presence->check_out)->format('H:i:s') }}</td>
+                                <td>
+                                    @if ($presence->check_out)
+                                        {{ \Carbon\Carbon::parse($presence->check_out)->format('H:i:s') }}
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                                 <td>
                                     @if ($presence->status === 'present')
                                         <span class="badge bg-success">Present</span>

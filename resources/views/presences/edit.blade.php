@@ -66,7 +66,7 @@
                     <div class="mb-3">
                         <label for="check_out" class="form-label">Check Out</label>
                         <input type="text" class="form-control datetime @error('check_out') is-invalid @enderror"
-                               name="check_out" id="check_out" value="{{ old('check_out', $presence->check_out->format('Y-m-d H:i:s')) }}">
+                               name="check_out" id="check_out" value="{{ old('check_out', optional($presence->check_out)->format('Y-m-d H:i:s')) }}">
                         @error('check_out')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

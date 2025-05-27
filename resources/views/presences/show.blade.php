@@ -48,7 +48,13 @@
                     <dd class="col-sm-9">{{ \Carbon\Carbon::parse($presence->check_in)->format('H:i:s') }}</dd>
 
                     <dt class="col-sm-3">Check Out</dt>
-                    <dd class="col-sm-9">{{ \Carbon\Carbon::parse($presence->check_out)->format('H:i:s') }}</dd>
+                    <dd class="col-sm-9">
+                        @if ($presence->check_out)
+                            {{ \Carbon\Carbon::parse($presence->check_out)->format('H:i:s') }}
+                        @else
+                            <span class="text-muted">-</span>
+                        @endif
+                    </dd>
 
                     <dt class="col-sm-3">Status</dt>
                     <dd class="col-sm-9">
