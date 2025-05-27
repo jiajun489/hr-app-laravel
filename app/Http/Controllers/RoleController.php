@@ -53,6 +53,9 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        if (in_array($role->title, ['Admin', 'HR Manager'])) {
+        return redirect()->route('roles.index')->with('error', 'Editing this role is not allowed.');
+        }
         return view('roles.edit', compact('role'));
     }
 

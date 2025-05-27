@@ -61,8 +61,8 @@
                                 <td>{{ $role->description ?? '-' }}</td>
                                 <td>
                                     <a href="{{ route('roles.show', $role->id) }}" class="btn btn-info btn-sm">View</a>
-                                    <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-primary btn-sm">Edit</a>
                                     @if (!in_array($role->title, ['Admin', 'HR Manager']))
+                                        <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-primary btn-sm">Edit</a>
                                         <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this role?');">
                                             @csrf
                                             @method('DELETE')
