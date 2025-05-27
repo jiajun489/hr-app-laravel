@@ -79,8 +79,14 @@ class EmployeeController extends Controller
 
     public function destroy(Employee $employee)
     {
+        // Misal, diasumsikan auth()->user()->email == $employee->email untuk user sendiri
+        if (auth()->user()->email === $employee->email) {
+            return redirect()->route('employees.index')->with('error', 'You cannot delete your own account.');
+        }
+
         $employee->delete();
 
         return redirect()->route('employees.index')->with('success', 'Employee deleted successfully.');
     }
+
 }

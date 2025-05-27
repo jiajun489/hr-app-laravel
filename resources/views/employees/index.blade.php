@@ -14,6 +14,13 @@
     </div>
 @endif
 
+@if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error:</strong> {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <div class="page-heading">
     <div class="page-title">
         <div class="row">
@@ -72,11 +79,13 @@
                                 <td>
                                     <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-info btn-sm">View</a>
                                     <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                    <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this employee?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
+                                    @if (auth()->user()->email !== $employee->email)
+                                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this employee?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
