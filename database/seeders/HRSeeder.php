@@ -102,12 +102,19 @@ class HRSeeder extends Seeder
             $checkOut = (clone $checkIn)->copy()->addHours(8);
             $dateOnly = $checkIn->format('Y-m-d');
 
+            // Randomly decide whether to fill latitude/longitude (80% ada data, 20% null)
+            $hasLocation = rand(1, 100) <= 80;
+            $latitude = $hasLocation ? (-6.175 + (mt_rand(-1000, 1000) / 10000)) : null; // Jakarta ~-6.175
+            $longitude = $hasLocation ? (106.827 + (mt_rand(-1000, 1000) / 10000)) : null; // Jakarta ~106.827
+
             DB::table('presences')->insert([
                 'employee_id' => rand(1, 10),
                 'check_in'    => $checkIn->format('Y-m-d H:i:s'),
                 'check_out'   => $checkOut->format('Y-m-d H:i:s'),
                 'date'        => $dateOnly,
                 'status'      => $faker->randomElement(['present', 'absent', 'late', 'leave']),
+                'latitude'    => $latitude,
+                'longitude'   => $longitude,
                 'created_at'  => now(),
                 'updated_at'  => now(),
             ]);

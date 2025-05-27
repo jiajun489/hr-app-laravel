@@ -55,6 +55,12 @@
                             <span class="text-muted">-</span>
                         @endif
                     </dd>
+                    
+                    <dt class="col-sm-3">Latitude</dt>
+                    <dd class="col-sm-9">{{ $presence->latitude ?? '-' }}</dd>
+
+                    <dt class="col-sm-3">Longitude</dt>
+                    <dd class="col-sm-9">{{ $presence->longitude ?? '-' }}</dd>
 
                     <dt class="col-sm-3">Status</dt>
                     <dd class="col-sm-9">
@@ -68,6 +74,23 @@
                             <span class="badge bg-info">Leave</span>
                         @else
                             <span class="badge bg-secondary">{{ ucfirst($presence->status) }}</span>
+                        @endif
+                    </dd>
+
+                    <dt class="col-sm-3">Location Map</dt>
+                    <dd class="col-sm-9">
+                        @if ($presence->latitude && $presence->longitude)
+                            <iframe
+                                width="400"
+                                height="250"
+                                style="border:0"
+                                loading="lazy"
+                                allowfullscreen
+                                referrerpolicy="no-referrer-when-downgrade"
+                                src="https://www.google.com/maps?q={{ $presence->latitude }},{{ $presence->longitude }}&z=17&output=embed">
+                            </iframe>
+                        @else
+                            <span class="text-muted">No location recorded</span>
                         @endif
                     </dd>
                 </dl>
