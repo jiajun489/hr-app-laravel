@@ -835,6 +835,7 @@
 <script src="{{ asset('mazer/assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
 <script src="{{ asset('mazer/assets/static/js/pages/simple-datatables.js') }}"></script>
 
+
 <!-- Need: Flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -867,6 +868,7 @@
             responsive: true,
             tension: 0.3,
             animation: false,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,

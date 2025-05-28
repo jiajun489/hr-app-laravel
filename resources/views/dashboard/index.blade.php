@@ -88,20 +88,20 @@
                     <h4>Latest Presences</h4>
                 </div>
                 <div class="card-body">
-                    <canvas id="presence" height="100"></canvas>
+                    <canvas id="presence" style="width:100%;height:200px;"></canvas>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h4>Latest Tasks</h4>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <!-- Desktop Table (shown ≥576px) -->
+                    <div class="table-responsive d-none d-sm-block">
                         <table class="table table-hover table-lg">
                             <thead>
                                 <tr>
@@ -132,10 +132,30 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Mobile List (shown <576px) -->
+                    <div class="d-block d-sm-none">
+                        @foreach ($tasks as $task)
+                        <div class="border rounded mb-2 px-2 py-2 bg-white shadow-sm">
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="avatar avatar-sm me-2">
+                                    <img src="https://ui-avatars.com/api/?name={{ $task->employee->fullname }}$background=random" width="32" height="32">
+                                </div>
+                                <div>
+                                    <strong>{{ $task->employee->fullname }}</strong>
+                                    <div class="small text-muted">{{ ucfirst($task->status) }}</div>
+                                </div>
+                            </div>
+                            <div class="small ps-4">{{ $task->title }}</div>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
 </div>
 
 @endsection
