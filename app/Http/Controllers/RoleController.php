@@ -53,7 +53,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        if (in_array($role->title, ['Admin', 'HR Manager'])) {
+        if (in_array($role->title, ['Admin', 'HR Manager', 'Developer', 'Accountant', 'Data Entry', 'Animator', 'Marketer'])) {
         return redirect()->route('roles.index')->with('error', 'Editing this role is not allowed.');
         }
         return view('roles.edit', compact('role'));
@@ -80,7 +80,7 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         // Protect critical roles
-        $protectedRoles = ['Admin', 'HR Manager'];
+        $protectedRoles = ['Admin', 'HR Manager', 'Developer', 'Accountant', 'Data Entry', 'Animator', 'Marketer'];
 
         if (in_array($role->title, $protectedRoles)) {
             return redirect()->route('roles.index')->with('error', "You cannot delete the '{$role->title}' role.");
