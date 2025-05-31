@@ -10,7 +10,11 @@
     </a>
 </header>
 
-@if (session('success')) <div class="alert alert-success alert-dismissible fade show" role="alert"> <strong>Success:</strong> {{ session('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> </div>
+@if (session('success'))
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success:</strong> {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 @endif
 
 @if (session('error'))
@@ -46,37 +50,59 @@
             </div>
 
             <div class="card-body">
-                <table class="table table-striped" id="table1">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($roles as $role)
+                <!-- Desktop Table (shown ≥576px) -->
+                <div class="table-responsive d-none d-sm-block">
+                    <table class="table table-striped" id="table1">
+                        <thead>
                             <tr>
-                                <td>{{ $role->title }}</td>
-                                <td>{{ $role->description ?? '-' }}</td>
-                                <td>
-                                    <a href="{{ route('roles.show', $role->id) }}" class="btn btn-info btn-sm">View</a>
-                                    @if (!in_array($role->title, ['Admin', 'HR Manager', 'Developer', 'Accountant', 'Data Entry', 'Animator', 'Marketer']))
-                                        <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                                        <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this role?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-danger btn-sm">Delete</button>
-                                        </form>
-                                    @endif
-                                </td>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Actions</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($roles as $role)
+                                <tr>
+                                    <td>{{ $role->title }}</td>
+                                    <td>{{ $role->description ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ route('roles.show', $role->id) }}" class="btn btn-info btn-sm">View</a>
+                                        @if (!in_array($role->title, ['Admin', 'HR Manager', 'Developer', 'Accountant', 'Data Entry', 'Animator', 'Marketer']))
+                                            <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                            <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this role?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-danger btn-sm">Delete</button>
+                                            </form>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Mobile Card/List (shown <576px) -->
+                <div class="d-block d-sm-none">
+                    @foreach ($roles as $role)
+                    <div class="border rounded mb-2 px-2 py-2 bg-white shadow-sm">
+                        <div class="fw-bold mb-1">{{ $role->title }}</div>
+                        <div class="small text-muted mb-1">{{ $role->description ?? '-' }}</div>
+                        <div>
+                            <a href="{{ route('roles.show', $role->id) }}" class="btn btn-info btn-sm mb-1">View</a>
+                            @if (!in_array($role->title, ['Admin', 'HR Manager', 'Developer', 'Accountant', 'Data Entry', 'Animator', 'Marketer']))
+                                <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-primary btn-sm mb-1">Edit</a>
+                                <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure to delete this role?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm mb-1">Delete</button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     </section>
-
 </div>
 @endsection

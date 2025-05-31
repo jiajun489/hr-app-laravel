@@ -53,3 +53,10 @@
     }
 }
 
+@media (max-width: 576px) {
+    .btn-sm {
+        min-width: 80px;
+        margin-right: 2px;
+        margin-bottom: 2px;
+    }
+}

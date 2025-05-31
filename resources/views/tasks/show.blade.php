@@ -62,7 +62,7 @@
                     </dd>
                 </dl>
 
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-start">
                     <a href="{{ route('tasks.index') }}" class="btn btn-secondary">Back to Task List</a>
                 </div>
             </div>

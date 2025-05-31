@@ -57,7 +57,7 @@
                     <dd class="col-sm-9">{{ $department->employees->count() }}</dd>
                 </dl>
 
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-start">
                     <a href="{{ route('departments.index') }}" class="btn btn-secondary">Back to Department List</a>
                 </div>
             </div>

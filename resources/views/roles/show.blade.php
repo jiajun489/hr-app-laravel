@@ -44,7 +44,7 @@
                     <dd class="col-sm-9">{{ $role->description ?? '-' }}</dd>
                 </dl>
 
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-start">
                     <a href="{{ route('roles.index') }}" class="btn btn-secondary">Back to Role List</a>
                 </div>
             </div>

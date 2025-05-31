@@ -75,7 +75,7 @@
                     <dd class="col-sm-9">${{ number_format($employee->salary, 2) }}</dd>
                 </dl>
 
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-start">
                     <a href="{{ route('employees.index') }}" class="btn btn-secondary">Back to Employee List</a>
                 </div>
             </div>

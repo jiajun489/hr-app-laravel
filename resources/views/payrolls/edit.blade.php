@@ -122,4 +122,25 @@
     document.getElementById('bonus').addEventListener('input', calculateNetSalary);
     document.getElementById('deduction').addEventListener('input', calculateNetSalary);
 </script>
+<style>
+    /* Untuk semua tombol (Cancel dan Create Presence) di form presence */
+.d-flex .btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 55px;
+    font-size: 1rem;
+    padding: 0 24px;
+    min-width: 120px;
+}
+
+/* Extra: Buat tombol lebih proporsional di mobile */
+@media (max-width: 576px) {
+    .d-flex .btn {
+        width: 48vw;
+        min-width: unset;
+        font-size: 1rem;
+    }
+}   
+</style>
 @endsection
