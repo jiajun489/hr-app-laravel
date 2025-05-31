@@ -88,7 +88,7 @@
                     <h4>Latest Presences</h4>
                 </div>
                 <div class="card-body">
-                    <canvas id="presence" style="width:100%;height:200px;"></canvas>
+                    <canvas id="presence" style="width:100%;height:300px;"></canvas>
                 </div>
             </div>
         </div>
