@@ -116,7 +116,10 @@
                            name="longitude" id="longitude" value="{{ old('longitude') }}" required>
                 </div>
                 <div class="mb-3">
-                    <iframe width="500" height="300" src="" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                    <iframe width="100%" height="200" style="border:0;" loading="lazy" frameborder="0" 
+                    scrolling="no" marginheight="0" marginwidth="0" allowfullscreen 
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src=""></iframe>
                 </div>
                 <!-- <button class="btn btn-primary" type="submit" id="btnPresence" disabled>Submit</button> -->
                 <button class="btn btn-primary" type="submit" id="btnPresence" >Submit</button>

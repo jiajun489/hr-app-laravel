@@ -88,7 +88,7 @@
                             @endif
                         </dd>
                     </dl>
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-start">
                         <a href="{{ route('presences.index') }}" class="btn btn-secondary">Back to Presence List</a>
                     </div>
                 </div>
