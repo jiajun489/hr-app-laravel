@@ -1,5 +1,5 @@
 <?php
-// routes/web.php
+// hrm.reltroner.com: routes/web.php
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TaskController;
@@ -10,6 +10,8 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Response;
+use App\Models\Employee;
 
 /**
  * Redirect root URL to tasks index
@@ -73,6 +75,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tasks', TaskController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
     Route::get('/tasks/{task}/mark-complete', [TaskController::class, 'markComplete'])->name('tasks.markComplete')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
     Route::get('/tasks/{task}/mark-pending', [TaskController::class, 'markPending'])->name('tasks.markPending')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
+});
+
+Route::get('/api/public-employees', function () {
+    return Response::json(Employee::select('id', 'name', 'email', 'position', 'department_id')->get());
 });
 
 require __DIR__.'/auth.php';
