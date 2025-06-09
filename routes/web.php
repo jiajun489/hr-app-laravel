@@ -78,7 +78,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/api/public-employees', function () {
-    return Response::json(Employee::select('id', 'fullname', 'email', 'position', 'department_id')->get());
+    return Response::json(Employee::select('id', 'fullname', 'email', 'department_id')->get());
 });
 
 require __DIR__.'/auth.php';
