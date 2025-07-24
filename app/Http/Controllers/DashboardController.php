@@ -27,8 +27,9 @@ class DashboardController extends Controller
         $response = [];
 
         foreach ($statuses as $status) {
+            // Use PostgreSQL compatible date extraction instead of MySQL's MONTH() function
             $rawData = Presence::where('status', $status)
-                ->selectRaw('MONTH(date) as month, COUNT(*) as total')
+                ->selectRaw('EXTRACT(MONTH FROM date) as month, COUNT(*) as total')
                 ->groupBy('month')
                 ->orderBy('month')
                 ->get();
