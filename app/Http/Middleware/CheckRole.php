@@ -16,11 +16,38 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        $employeeID = auth()->user()->employee_id;
+        // Set default values following code review rules
+        $user = auth()->user();
+        $employeeID = $user ? $user->employee_id : null;
+        
+        // Check if employee_id exists
+        if ($employeeID === null) {
+            abort(403, 'No employee record associated with this user.');
+        }
+        
         $employee = Employee::find($employeeID);
-        $request->session()->put('role', $employee->role->title);
+        
+        // Check if employee exists
+        if ($employee === null) {
+            abort(403, 'Employee record not found.');
+        }
+        
+        // Check if employee has a role
+        $role = $employee->role;
+        if ($role === null) {
+            abort(403, 'Employee has no assigned role.');
+        }
+        
+        // Get role title with proper null check
+        $roleTitle = $role->title;
+        if ($roleTitle === null) {
+            abort(403, 'Role title is missing.');
+        }
+        
+        $request->session()->put('role', $roleTitle);
         $request->session()->put('employee_id', $employee->id);
-        if (!in_array($employee->role->title, $roles)) {
+        
+        if (!in_array($roleTitle, $roles)) {
             abort(403, 'Unauthorized action.');
         }
         return $next($request);

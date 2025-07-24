@@ -36,27 +36,51 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($users as $index => $data) {
+            // Check if user with this email already exists
+            $existingUser = User::where('email', $data['email'])->first();
+            if ($existingUser) {
+                continue; // Skip if user already exists
+            }
+            
+            // Check if employee with this email already exists
+            $existingEmployee = Employee::where('email', $data['email'])->first();
+            if ($existingEmployee) {
+                continue; // Skip if employee already exists
+            }
+            
             $role = Role::where('title', $data['role'])->first();
+            if (!$role) {
+                continue; // Skip if role doesn't exist
+            }
 
-            $employee = Employee::create([
-                'fullname'      => $data['name'],
-                'email'         => $data['email'],
-                'phone'         => '0812345678' . $index,
-                'address'       => 'Reltroner HQ',
-                'birth_date'    => now()->subYears(25)->subDays($index),
-                'hire_date'     => now()->subMonths(3),
-                'department_id' => $defaultDept->id,
-                'role_id'       => $role->id,
-                'status'        => 'active',
-                'salary'        => 5000 + ($index * 100),
-            ]);
+            // Create employee with firstOrCreate to avoid duplicates
+            $employee = Employee::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'fullname'      => $data['name'],
+                    'phone'         => '0812345678' . $index,
+                    'address'       => 'Reltroner HQ',
+                    'birth_date'    => now()->subYears(25)->subDays($index),
+                    'hire_date'     => now()->subMonths(3),
+                    'department_id' => $defaultDept->id,
+                    'role_id'       => $role->id,
+                    'status'        => 'active',
+                    'salary'        => 5000 + ($index * 100),
+                ]
+            );
 
-            User::create([
-                'name'        => $data['name'],
-                'email'       => $data['email'],
-                'password'    => Hash::make('password'), // default password
-                'employee_id' => $employee->id,
-            ]);
+            // Create user with firstOrCreate to avoid duplicates
+            // Ensure employee ID is properly set following variable declaration checks
+            $employeeId = $employee ? $employee->id : null;
+            
+            User::firstOrCreate(
+                ['email' => $data['email']],
+                [
+                    'name'        => $data['name'],
+                    'password'    => Hash::make('password'), // default password
+                    'employee_id' => $employeeId,
+                ]
+            );
         }
     }
 }
