@@ -145,12 +145,14 @@
                 </a>
             </li>
 
+            @if(session('role') == 'Admin' || session('role') == 'HR Manager')
             <li class="sidebar-item {{ request()->is('payrolls*') ? 'active' : '' }}">
                 <a href="{{ route('payrolls.index') }}" class='sidebar-link'>
                     <i class="bi bi-currency-dollar"></i>
                     <span>Payrolls</span>
                 </a>
             </li>
+            @endif
 
             <li class="sidebar-item {{ request()->is('leave_requests*') ? 'active' : '' }}">
                 <a href="{{ route('leave_requests.index') }}" class='sidebar-link'>
@@ -183,13 +185,14 @@
                 </a>
             </li>
 
+            @if(session('role') == 'Admin' || session('role') == 'HR Manager')
             <li class="sidebar-item {{ request()->is('payrolls*') ? 'active' : '' }}">
                 <a href="{{ route('payrolls.index') }}" class='sidebar-link'>
                     <i class="bi bi-currency-dollar"></i>
                     <span>Payrolls</span>
                 </a>
             </li>
-
+            @endif
             <li class="sidebar-item {{ request()->is('leave_requests*') ? 'active' : '' }}">
                 <a href="{{ route('leave_requests.index') }}" class='sidebar-link'>
                     <i class="bi bi-shift-fill"></i>
@@ -804,6 +807,7 @@
 </div>
         </div>
         <div id="main">
+            <!-- Debug: Current role: {{ session('role') }} -->
 
         @yield('content')
 
@@ -927,6 +931,7 @@
 
     updateData();
 </script>
+
 @stack('scripts')
 
 </body>

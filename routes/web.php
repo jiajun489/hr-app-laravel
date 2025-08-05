@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
      */
     Route::resource('/payrolls', PayrollController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
     Route::resource('/presences', PresenceController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
+    Route::post('/presences/clock-out', [PresenceController::class, 'clockOut'])->name('presences.clock-out')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
 
     /**
      * Role management routes

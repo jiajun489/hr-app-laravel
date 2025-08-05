@@ -51,10 +51,7 @@
                                 <span class="text-muted">-</span>
                             @endif
                         </dd>
-                        <dt class="col-sm-4">Latitude</dt>
-                        <dd class="col-sm-8">{{ $presence->latitude ?? '-' }}</dd>
-                        <dt class="col-sm-4">Longitude</dt>
-                        <dd class="col-sm-8">{{ $presence->longitude ?? '-' }}</dd>
+                        <!-- Latitude and Longitude fields removed -->
                         <dt class="col-sm-4">Status</dt>
                         <dd class="col-sm-8">
                             @if ($presence->status === 'present')
@@ -69,24 +66,7 @@
                                 <span class="badge bg-secondary">{{ ucfirst($presence->status) }}</span>
                             @endif
                         </dd>
-                        <dt class="col-sm-4">Location Map</dt>
-                        <dd class="col-sm-8">
-                            @if ($presence->latitude && $presence->longitude)
-                                <div class="map-responsive mb-2">
-                                    <iframe
-                                        width="100%"
-                                        height="220"
-                                        style="border:0;"
-                                        loading="lazy"
-                                        allowfullscreen
-                                        referrerpolicy="no-referrer-when-downgrade"
-                                        src="https://www.google.com/maps?q={{ $presence->latitude }},{{ $presence->longitude }}&z=17&output=embed">
-                                    </iframe>
-                                </div>
-                            @else
-                                <span class="text-muted">No location recorded</span>
-                            @endif
-                        </dd>
+                        <!-- Location Map section removed -->
                     </dl>
                     <div class="d-flex justify-content-start">
                         <a href="{{ route('presences.index') }}" class="btn btn-secondary">Back to Presence List</a>

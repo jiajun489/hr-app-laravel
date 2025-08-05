@@ -29,7 +29,31 @@ class PresenceController extends Controller
     public function create()
     {
         $employees = Employee::all();
-        return view('presences.create', compact('employees'));
+        
+        // Check if the user has already clocked in today
+        $hasActivePresence = false;
+        $hasCompletedPresence = false;
+        
+        if (session('employee_id')) {
+            $today = Carbon::now()->format('Y-m-d');
+            
+            // Check for active presence (clocked in but not out)
+            $activePresence = Presence::where('employee_id', session('employee_id'))
+                                ->where('date', $today)
+                                ->whereNull('check_out')
+                                ->first();
+            
+            // Check for completed presence (clocked in and out)
+            $completedPresence = Presence::where('employee_id', session('employee_id'))
+                                ->where('date', $today)
+                                ->whereNotNull('check_out')
+                                ->first();
+            
+            $hasActivePresence = $activePresence ? true : false;
+            $hasCompletedPresence = $completedPresence ? true : false;
+        }
+        
+        return view('presences.create', compact('employees', 'hasActivePresence', 'hasCompletedPresence'));
     }
 
     /**
@@ -120,5 +144,29 @@ class PresenceController extends Controller
         $presence->delete();
 
         return redirect()->route('presences.index')->with('success', 'Presence deleted successfully.');
+    }
+
+    /**
+     * Clock out the employee for today's presence.
+     */
+    public function clockOut(Request $request)
+    {
+        // Find today's presence record for the current employee
+        $today = Carbon::now()->format('Y-m-d');
+        $presence = Presence::where('employee_id', session('employee_id'))
+                           ->where('date', $today)
+                           ->whereNull('check_out')
+                           ->first();
+
+        if ($presence) {
+            // Update the check_out time
+            $presence->update([
+                'check_out' => Carbon::now()->format('Y-m-d H:i:s')
+            ]);
+
+            return redirect()->route('presences.index')->with('success', 'Clock out recorded successfully.');
+        }
+
+        return redirect()->route('presences.index')->with('error', 'No active presence found for today.');
     }
 }

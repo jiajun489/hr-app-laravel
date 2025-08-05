@@ -102,67 +102,37 @@
                 </form>
             @else
 
-            <form action="{{ route('presences.store') }}" method="POST">
-                @csrf
-                <div class="mb-3"><b>Note</b> : Please turn on location permission on your device.</div>
-                <div class="mb-3">
-                    <label for="latitude" class="form-label">Latitude</label>
-                    <input type="text" readonly class="form-control"
-                           name="latitude" id="latitude" value="{{ old('latitude') }}" required>
+            @if($hasCompletedPresence)
+                <div class="alert alert-success">
+                    <h5 class="mb-0">You have already completed your attendance for today!</h5>
+                    <p class="mb-0 mt-2">You have successfully clocked in and out for today.</p>
                 </div>
-                <div class="mb-3">
-                    <label for="longitude" class="form-label">Longitude</label>
-                    <input type="text" readonly class="form-control"
-                           name="longitude" id="longitude" value="{{ old('longitude') }}" required>
+            @elseif($hasActivePresence)
+                <div class="alert alert-info">
+                    <h5 class="mb-0">You are currently clocked in!</h5>
+                    <p class="mb-0 mt-2">Don't forget to clock out when you finish your work.</p>
                 </div>
-                <div class="mb-3">
-                    <iframe width="100%" height="200" style="border:0;" loading="lazy" frameborder="0" 
-                    scrolling="no" marginheight="0" marginwidth="0" allowfullscreen 
-                    referrerpolicy="no-referrer-when-downgrade"
-                    src=""></iframe>
-                </div>
-                <!-- <button class="btn btn-primary" type="submit" id="btnPresence" disabled>Submit</button> -->
-                <button class="btn btn-primary" type="submit" id="btnPresence" >Submit</button>
-            </form>
+                
+                <form action="{{ route('presences.clock-out') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-warning btn-lg">Clock Out</button>
+                </form>
+            @else
+                <form action="{{ route('presences.store') }}" method="POST">
+                    @csrf
+                    <!-- Latitude and Longitude fields removed -->
+                    <!-- Map iframe removed -->
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary btn-lg" type="submit" id="btnPresence">Clock In</button>
+                    </div>
+                </form>
+            @endif
             @endif
             </div>
         </div>
     </section>
 </div>
-<script>
-    const iframe = document.querySelector('iframe');
-    const officeLat = -6.175392;
-    const officeLng = 106.827153;
-    const threshold = 0.01;
-    navigator.geolocation.getCurrentPosition(function(position){
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        iframe.src = `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
-    });
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position){
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-
-                document.getElementById('latitude').value = lat;
-                document.getElementById('longitude').value = lng;
-                
-                //compare
-                const distance = Math.sqrt(Math.pow(lat - officeLat, 2) + Math.pow(lng - officeLng, 2));
-                if (distance <= threshold) {
-                    //in office
-                    alert('You are in office');
-                    document.getElementById('btnPresence').removeAttribute('disabled');
-                }else{
-                    //out of office
-                    alert('You are out of office');
-                }
-            });
-        }
-    });
-</script>
+<!-- Location tracking JavaScript removed -->
 <style>
     /* Untuk semua tombol (Cancel dan Create Presence) di form presence */
 .d-flex .btn {
