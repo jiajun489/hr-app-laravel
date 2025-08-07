@@ -76,6 +76,28 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('tasks', TaskController::class)->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
     Route::get('/tasks/{task}/mark-complete', [TaskController::class, 'markComplete'])->name('tasks.markComplete')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
     Route::get('/tasks/{task}/mark-pending', [TaskController::class, 'markPending'])->name('tasks.markPending')->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
+
+    /**
+     * Work-Life Balance routes
+     */
+    Route::get('/work-life-balance/admin', [\App\Http\Controllers\WorkLifeBalanceController::class, 'adminDashboard'])
+        ->name('work-life-balance.admin')
+        ->middleware(['role:Admin,HR Manager']);
+    
+    Route::get('/work-life-balance/employee', [\App\Http\Controllers\WorkLifeBalanceController::class, 'employeeDashboard'])
+        ->name('work-life-balance.employee')
+        ->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
+    
+    Route::get('/work-life-balance/manager', [\App\Http\Controllers\WorkLifeBalanceController::class, 'managerDashboard'])
+        ->name('work-life-balance.manager')
+        ->middleware(['role:Admin,HR Manager,Developer,Accountant,Data Entry,Animator,Marketer']);
+
+    /**
+     * Analytics routes
+     */
+    Route::get('/admin/analytics', [\App\Http\Controllers\AnalyticsController::class, 'index'])
+        ->name('admin.analytics.index')
+        ->middleware(['role:Admin,HR Manager']);
 });
 
 Route::get('/api/public-employees', function () {

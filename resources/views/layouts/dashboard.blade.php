@@ -161,6 +161,25 @@
                 </a>
             </li>
 
+            <li class="sidebar-item has-sub {{ request()->is('work-life-balance*') ? 'active' : '' }}">
+                <a href="#" class='sidebar-link'>
+                    <i class="bi bi-heart-pulse"></i>
+                    <span>Work-Life Balance</span>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item">
+                        <a href="{{ route('work-life-balance.admin') }}" class="submenu-link">Admin Dashboard</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="sidebar-item {{ request()->is('admin/analytics*') ? 'active' : '' }}">
+                <a href="{{ route('admin.analytics.index') }}" class='sidebar-link'>
+                    <i class="bi bi-graph-up"></i>
+                    <span>HR Analytics</span>
+                </a>
+            </li>
+
             @endif
             @if(in_array(session('role'), ['Developer', 'Accountant', 'Data Entry', 'Animator', 'Marketer']))
             <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
@@ -198,6 +217,21 @@
                     <i class="bi bi-shift-fill"></i>
                     <span>Leave Requests</span>
                 </a>
+            </li>
+
+            <li class="sidebar-item has-sub {{ request()->is('work-life-balance*') ? 'active' : '' }}">
+                <a href="#" class='sidebar-link'>
+                    <i class="bi bi-heart-pulse"></i>
+                    <span>Work-Life Balance</span>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item">
+                        <a href="{{ route('work-life-balance.employee') }}" class="submenu-link">My Balance</a>
+                    </li>
+                    <li class="submenu-item">
+                        <a href="{{ route('work-life-balance.manager') }}" class="submenu-link">Team Balance</a>
+                    </li>
+                </ul>
             </li>
 
             @endif
