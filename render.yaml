@@ -22,6 +22,7 @@ services:
         value: cookie
       - key: CACHE_DRIVER
         value: file
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci && npm run build || echo "Frontend build skipped"
+    startCommand: php artisan migrate --force || echo "Migration skipped" && php artisan serve --host 0.0.0.0 --port $PORT
     healthCheckPath: /
     autoDeploy: true

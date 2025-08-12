@@ -41,13 +41,17 @@ RUN chown -R www-data:www-data /var/www/html
 # Install dependencies
 RUN composer install --optimize-autoloader --no-dev
 
-# Generate application key
-RUN php artisan key:generate
+# Copy .env.example to .env if .env doesn't exist
+RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
-# Cache configuration
+# Generate application key if APP_KEY is not set
+RUN grep -q "^APP_KEY=" .env && echo "APP_KEY exists" || php artisan key:generate
+
+# Cache configuration (but skip commands that might need a database)
 RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+# Skip route and view caching as they might require a database connection
+# RUN php artisan route:cache
+# RUN php artisan view:cache
 
 # Expose port 9000
 EXPOSE 9000
