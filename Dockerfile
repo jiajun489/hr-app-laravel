@@ -37,9 +37,31 @@ RUN composer install --no-dev --optimize-autoloader
 # Install Node dependencies and build assets
 RUN npm install && npm run build
 
+# Create storage directories and set permissions
+RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache
+
+# Create startup script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Setting up Laravel application..."\n\
+php artisan key:generate --force\n\
+php artisan config:clear\n\
+php artisan route:clear\n\
+php artisan view:clear\n\
+php artisan cache:clear\n\
+php artisan migrate --force\n\
+php artisan config:cache\n\
+echo "Starting server on port $PORT..."\n\
+php artisan serve --host=0.0.0.0 --port=$PORT' > /var/www/docker-start.sh
+
+RUN chmod +x /var/www/docker-start.sh
+
 # Change current user to www
 USER www-data
 
-# Expose port 8000 and start php-fpm server
+# Expose port 8000
 EXPOSE 8000
-CMD php artisan serve --host=0.0.0.0 --port=8000
+
+# Use the startup script
+CMD ["/var/www/docker-start.sh"]
