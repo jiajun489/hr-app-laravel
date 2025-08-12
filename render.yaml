@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: hr-app-laravel
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: php artisan serve --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        fromService:
+          type: web
+          name: hr-app-laravel
+          property: host
+      - key: DB_CONNECTION
+        value: mysql
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: CACHE_DRIVER
+        value: file
+    buildCommand: npm ci && npm run build
+    healthCheckPath: /
+    autoDeploy: true
