@@ -3,8 +3,10 @@ services:
     name: hr-app-laravel
     env: docker
     dockerfilePath: ./Dockerfile
-    dockerCommand: php artisan serve --host 0.0.0.0 --port $PORT
+    # Render will provide the PORT environment variable automatically
     envVars:
+      - key: PORT
+        sync: false
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
@@ -23,6 +25,7 @@ services:
       - key: CACHE_DRIVER
         value: file
     buildCommand: npm ci && npm run build || echo "Frontend build skipped"
-    startCommand: php artisan migrate --force || echo "Migration skipped" && php artisan serve --host 0.0.0.0 --port $PORT
+    # Run migrations but use the CMD from Dockerfile to start the server
+    startCommand: php artisan migrate --force || echo "Migration skipped"
     healthCheckPath: /
     autoDeploy: true

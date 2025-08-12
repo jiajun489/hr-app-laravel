@@ -1,60 +1,44 @@
 FROM php:8.2-fpm
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
     git \
     curl \
-    libzip-dev \
+    libpng-dev \
     libonig-dev \
-    libxml2-dev
+    libxml2-dev \
+    zip \
+    unzip \
+    nodejs \
+    npm
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install composer
+# Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
+WORKDIR /var/www
+
 # Copy existing application directory contents
-COPY . /var/www/html
+COPY . /var/www
 
-# Copy .env.example to .env if .env doesn't exist
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+# Copy existing application directory permissions
+COPY --chown=www-data:www-data . /var/www
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-# Install dependencies
-RUN composer install --optimize-autoloader --no-dev
+# Install Node dependencies and build assets
+RUN npm install && npm run build
 
-# Copy .env.example to .env if .env doesn't exist
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
+# Change current user to www
+USER www-data
 
-# Generate application key if APP_KEY is not set
-RUN grep -q "^APP_KEY=" .env && echo "APP_KEY exists" || php artisan key:generate
-
-# Cache configuration (but skip commands that might need a database)
-RUN php artisan config:cache
-# Skip route and view caching as they might require a database connection
-# RUN php artisan route:cache
-# RUN php artisan view:cache
-
-# Expose port 9000
-EXPOSE 9000
-
-# Start PHP-FPM server
-CMD ["php-fpm"]
+# Expose port 8000 and start php-fpm server
+EXPOSE 8000
+CMD php artisan serve --host=0.0.0.0 --port=8000
