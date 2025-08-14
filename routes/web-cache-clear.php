@@ -2,7 +2,7 @@
 // Add this temporarily to routes/web.php
 
 Route::get('/clear-cache-emergency', function() {
-    if (app()->environment('production')) {
+    if (app()->environment('local')) {
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Artisan::call('route:clear');

@@ -100,6 +100,30 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['role:Admin,HR Manager']);
 });
 
+// Emergency database and session fix route
+Route::get('/fix-database-emergency', function() {
+    if (app()->environment('production')) {
+        try {
+            // Clear all caches
+            Artisan::call('config:clear');
+            Artisan::call('cache:clear');
+            Artisan::call('route:clear');
+            Artisan::call('view:clear');
+            
+            // Run migrations to ensure sessions table exists
+            Artisan::call('migrate', ['--force' => true]);
+            
+            // Recache config
+            Artisan::call('config:cache');
+            
+            return 'Database and cache fixed successfully! Sessions table created/updated. Please remove this route after use.';
+        } catch (Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
+    }
+    return 'Only available in production';
+});
+
 Route::get('/api/public-employees', function () {
     return Response::json(Employee::select('id', 'fullname', 'email', 'department_id')->get());
 });
