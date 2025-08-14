@@ -38,30 +38,32 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label for="title" class="form-label">Task Title</label>
+                        <label for="title" class="form-label">Task Title <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror"
-                               id="title" name="title" value="{{ old('title') }}">
+                               id="title" name="title" value="{{ old('title') }}" 
+                               placeholder="Enter task title (e.g., Complete project documentation)">
                         @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description (optional)</label>
+                        <label for="description" class="form-label">Description</label>
                         <textarea class="form-control @error('description') is-invalid @enderror"
-                                  id="description" name="description" rows="3">{{ old('description') }}</textarea>
+                                  id="description" name="description" rows="4" 
+                                  placeholder="Provide detailed description of the task...">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="assigned_to" class="form-label">Assign To</label>
+                        <label for="assigned_to" class="form-label">Assign To <span class="text-danger">*</span></label>
                         <select class="form-select @error('assigned_to') is-invalid @enderror" name="assigned_to" id="assigned_to">
                             <option value="">-- Select Employee --</option>
                             @foreach($employees as $employee)
                                 <option value="{{ $employee->id }}" {{ old('assigned_to') == $employee->id ? 'selected' : '' }}>
-                                    {{ $employee->fullname }}
+                                    {{ $employee->fullname }} - {{ $employee->role->name ?? 'No Role' }}
                                 </option>
                             @endforeach
                         </select>
@@ -71,24 +73,26 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="due_date" class="form-label">Due Date</label>
-                        <input type="datetime-local" class="form-control date @error('due_date') is-invalid @enderror"
-                               id="due_date" name="due_date" value="{{ old('due_date') }}">
+                        <label for="due_date" class="form-label">Due Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control @error('due_date') is-invalid @enderror"
+                               id="due_date" name="due_date" value="{{ old('due_date', date('Y-m-d')) }}" 
+                               min="{{ date('Y-m-d') }}">
                         @error('due_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="status" class="form-label">Status</label>
+                        <label for="status" class="form-label">Initial Status</label>
                         <select class="form-select @error('status') is-invalid @enderror" name="status" id="status">
-                            <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="pending" {{ old('status', 'pending') == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="in_progress" {{ old('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                             <option value="completed" {{ old('status') == 'completed' ? 'selected' : '' }}>Completed</option>
                         </select>
                         @error('status')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                        <div class="form-text">Most tasks start as "Pending"</div>
                     </div>
 
                     <div class="d-flex justify-content-end">

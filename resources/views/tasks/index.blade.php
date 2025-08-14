@@ -33,13 +33,34 @@
         </div>
     </div>
 
+    <!-- Quick Add Task Section -->
+    <section class="section">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Quick Add Task</h6>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-end">
+                    <div class="col-md-8">
+                        <p class="text-muted mb-2">Need to add a new task quickly? Click the button below or use the detailed form.</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{{ route('tasks.create') }}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Create New Task
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="section">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Task List</h5>
-                @if(session('role') == 'Admin' || session('role') == 'HR Manager')
-                    <a href="{{ route('tasks.create') }}" class="btn btn-primary btn-sm">New Task</a>
-                @endif
+                <a href="{{ route('tasks.create') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle"></i> Add New Task
+                </a>
             </div>
 
             <div class="card-body">
@@ -77,7 +98,7 @@
                                 @else
                                     <a href="{{ route('tasks.markPending', $task->id) }}" class="btn btn-warning btn-sm mb-1">Mark Pending</a>
                                 @endif
-                                @if(session('role') == 'Admin' || session('role') == 'HR Manager')
+                                @if(session('role') == 'Admin' || session('role') == 'HR Manager' || session('role') == 'Developer')
                                     <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary btn-sm mb-1">Edit</a>
                                     <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
                                         @csrf
@@ -114,7 +135,7 @@
                     @else
                         <a href="{{ route('tasks.markPending', $task->id) }}" class="btn btn-warning btn-sm mb-1">Mark Pending</a>
                     @endif
-                    @if(session('role') == 'Admin' || session('role') == 'HR Manager')
+                    @if(session('role') == 'Admin' || session('role') == 'HR Manager' || session('role') == 'Developer')
                         <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary btn-sm mb-1">Edit</a>
                         <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?');">
                             @csrf
