@@ -71,6 +71,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Assigned To</th>
+                        <th>Repository</th>
                         <th>Due Date</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -81,6 +82,15 @@
                         <tr>
                             <td>{{ $task->title }}</td>
                             <td>{{ $task->employee->fullname ?? '-' }}</td>
+                            <td>
+                                @if($task->repo)
+                                    <a href="{{ $task->repo }}" target="_blank" class="text-primary">
+                                        <i class="bi bi-github"></i> Repository
+                                    </a>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
                             <td>{{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}</td>
                             <td>
                                 @if ($task->status === 'pending')
@@ -127,6 +137,11 @@
                     </span>
                 </div>
                 <div class="small text-muted mb-1">Assigned to: <b>{{ $task->employee->fullname ?? '-' }}</b></div>
+                @if($task->repo)
+                    <div class="small text-muted mb-1">
+                        Repository: <a href="{{ $task->repo }}" target="_blank" class="text-primary"><i class="bi bi-github"></i> View Repo</a>
+                    </div>
+                @endif
                 <div class="small text-muted mb-2">Due: {{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}</div>
                 <div>
                     <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-info btn-sm mb-1">View</a>

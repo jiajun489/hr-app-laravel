@@ -13,6 +13,7 @@ class Task extends Model
     protected $fillable = [
         'title',
         'description',
+        'repo',
         'assigned_to',
         'due_date',
         'status',

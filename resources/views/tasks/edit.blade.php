@@ -58,6 +58,20 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="repo" class="form-label">Repository URL</label>
+                        <input type="url" class="form-control @error('repo') is-invalid @enderror"
+                               id="repo" name="repo" value="{{ old('repo', $task->repo) }}" 
+                               placeholder="https://github.com/username/repository (for mental health analysis)">
+                        @error('repo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">
+                            <i class="bi bi-info-circle"></i> 
+                            Optional: Repository URL for code analysis and mental health insights
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="assigned_to" class="form-label">Assign To</label>
                         <select class="form-select @error('assigned_to') is-invalid @enderror" name="assigned_to" id="assigned_to">
                             <option value="">-- Select Employee --</option>

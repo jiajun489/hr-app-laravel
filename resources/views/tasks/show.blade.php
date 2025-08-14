@@ -42,6 +42,18 @@
                     <dt class="col-sm-3">Description</dt>
                     <dd class="col-sm-9">{{ $task->description ?? '-' }}</dd>
 
+                    <dt class="col-sm-3">Repository</dt>
+                    <dd class="col-sm-9">
+                        @if($task->repo)
+                            <a href="{{ $task->repo }}" target="_blank" class="text-primary">
+                                <i class="bi bi-github"></i> {{ $task->repo }}
+                            </a>
+                            <small class="text-muted d-block">For mental health analysis</small>
+                        @else
+                            <span class="text-muted">No repository linked</span>
+                        @endif
+                    </dd>
+
                     <dt class="col-sm-3">Assigned To</dt>
                     <dd class="col-sm-9">{{ $task->employee->fullname ?? '-' }}</dd>
 
