@@ -1,31 +1,31 @@
 services:
   - type: web
     name: hr-app-laravel
-    env: docker
-    dockerfilePath: ./Dockerfile
-    # Render will provide the PORT environment variable automatically
+    env: node
+    buildCommand: composer install --no-dev --optimize-autoloader
+    startCommand: ./start.sh
     envVars:
-      - key: PORT
-        sync: false
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
       - key: APP_URL
-        fromService:
-          type: web
-          name: hr-app-laravel
-          property: host
+        value: https://hr-app-laravel.onrender.com
       - key: DB_CONNECTION
-        value: mysql
-      - key: LOG_CHANNEL
-        value: stderr
+        value: pgsql
+      - key: DB_HOST
+        value: aws-0-ap-southeast-1.pooler.supabase.com
+      - key: DB_PORT
+        value: 6543
+      - key: DB_DATABASE
+        value: postgres
+      - key: DB_USERNAME
+        value: postgres.ygnlrczerbkvvfyarime
+      - key: DB_PASSWORD
+        value: N@ture99
       - key: SESSION_DRIVER
-        value: cookie
-      - key: CACHE_DRIVER
-        value: file
-    buildCommand: npm ci && npm run build || echo "Frontend build skipped"
-    # Run migrations but use the CMD from Dockerfile to start the server
-    startCommand: php artisan migrate --force || echo "Migration skipped"
-    healthCheckPath: /
-    autoDeploy: true
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
