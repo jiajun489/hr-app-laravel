@@ -71,7 +71,7 @@
                     <tr>
                         <th>Title</th>
                         <th>Assigned To</th>
-                        <th>Repository</th>
+                        <th>PR URL</th>
                         <th>Due Date</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -83,10 +83,13 @@
                             <td>{{ $task->title }}</td>
                             <td>{{ $task->employee->fullname ?? '-' }}</td>
                             <td>
-                                @if($task->repo)
-                                    <a href="{{ $task->repo }}" target="_blank" class="text-primary">
-                                        <i class="bi bi-github"></i> Repository
+                                @if($task->pr_url)
+                                    <a href="{{ $task->pr_url }}" target="_blank" class="text-primary">
+                                        <i class="bi bi-link-45deg"></i> PR
                                     </a>
+                                    @if($task->platform)
+                                        <small class="text-muted d-block">{{ $task->platform }}</small>
+                                    @endif
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif
@@ -98,12 +101,14 @@
                                 @elseif ($task->status === 'completed')
                                     <span class="badge bg-success">Completed</span>
                                 @else
-                                    <span class="badge bg-primary">{{ ucfirst($task->status) }}</span>
+                                    <span class="badge bg-primary">In Progress</span>
                                 @endif
                             </td>
                             <td>
                                 <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-info btn-sm mb-1">View</a>
                                 @if ($task->status === 'pending')
+                                    <a href="{{ route('tasks.markInProgress', $task->id) }}" class="btn btn-primary btn-sm mb-1">Start Progress</a>
+                                @elseif ($task->status === 'in_progress')
                                     <a href="{{ route('tasks.markComplete', $task->id) }}" class="btn btn-success btn-sm mb-1">Mark Complete</a>
                                 @else
                                     <a href="{{ route('tasks.markPending', $task->id) }}" class="btn btn-warning btn-sm mb-1">Mark Pending</a>
@@ -126,7 +131,7 @@
         <!-- Mobile Card List -->
         <div class="d-block d-sm-none">
             @foreach ($tasks as $task)
-            <div class="border rounded mb-2 px-2 py-2 bg-white shadow-sm">
+            <div class="border rounded mb-2 px-2 py-2">
                 <div class="mb-1">
                     <strong>{{ $task->title }}</strong>
                     <span class="badge float-end
@@ -137,15 +142,20 @@
                     </span>
                 </div>
                 <div class="small text-muted mb-1">Assigned to: <b>{{ $task->employee->fullname ?? '-' }}</b></div>
-                @if($task->repo)
+                @if($task->pr_url)
                     <div class="small text-muted mb-1">
-                        Repository: <a href="{{ $task->repo }}" target="_blank" class="text-primary"><i class="bi bi-github"></i> View Repo</a>
+                        PR: <a href="{{ $task->pr_url }}" target="_blank" class="text-primary"><i class="bi bi-link-45deg"></i> View PR</a>
+                        @if($task->platform)
+                            <span class="badge bg-info ms-1">{{ $task->platform }}</span>
+                        @endif
                     </div>
                 @endif
                 <div class="small text-muted mb-2">Due: {{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}</div>
                 <div>
                     <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-info btn-sm mb-1">View</a>
                     @if ($task->status === 'pending')
+                        <a href="{{ route('tasks.markInProgress', $task->id) }}" class="btn btn-primary btn-sm mb-1">Mark In Progress</a>
+                    @elseif ($task->status === 'in_progress')
                         <a href="{{ route('tasks.markComplete', $task->id) }}" class="btn btn-success btn-sm mb-1">Mark Complete</a>
                     @else
                         <a href="{{ route('tasks.markPending', $task->id) }}" class="btn btn-warning btn-sm mb-1">Mark Pending</a>

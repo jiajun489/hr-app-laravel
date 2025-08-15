@@ -42,15 +42,24 @@
                     <dt class="col-sm-3">Description</dt>
                     <dd class="col-sm-9">{{ $task->description ?? '-' }}</dd>
 
-                    <dt class="col-sm-3">Repository</dt>
+                    <dt class="col-sm-3">PR URL</dt>
                     <dd class="col-sm-9">
-                        @if($task->repo)
-                            <a href="{{ $task->repo }}" target="_blank" class="text-primary">
-                                <i class="bi bi-github"></i> {{ $task->repo }}
+                        @if($task->pr_url)
+                            <a href="{{ $task->pr_url }}" target="_blank" class="text-primary">
+                                <i class="bi bi-link-45deg"></i> {{ $task->pr_url }}
                             </a>
-                            <small class="text-muted d-block">For mental health analysis</small>
+                            <small class="text-muted d-block">Pull Request for code review</small>
                         @else
-                            <span class="text-muted">No repository linked</span>
+                            <span class="text-muted">No PR linked</span>
+                        @endif
+                    </dd>
+
+                    <dt class="col-sm-3">Platform</dt>
+                    <dd class="col-sm-9">
+                        @if($task->platform)
+                            <span class="badge bg-info">{{ $task->platform }}</span>
+                        @else
+                            <span class="text-muted">Not specified</span>
                         @endif
                     </dd>
 

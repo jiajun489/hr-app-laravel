@@ -58,17 +58,28 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="repo" class="form-label">Repository URL</label>
-                        <input type="url" class="form-control @error('repo') is-invalid @enderror"
-                               id="repo" name="repo" value="{{ old('repo') }}" 
-                               placeholder="https://github.com/username/repository (for mental health analysis)">
-                        @error('repo')
+                        <label for="pr_url" class="form-label">PR URL</label>
+                        <input type="url" class="form-control @error('pr_url') is-invalid @enderror"
+                               id="pr_url" name="pr_url" value="{{ old('pr_url') }}" 
+                               placeholder="https://github.com/username/repository/pull/123">
+                        @error('pr_url')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                         <div class="form-text">
                             <i class="bi bi-info-circle"></i> 
-                            Optional: Repository URL for code analysis and mental health insights
+                            Optional: Pull Request URL for code review and analysis
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="platform" class="form-label">Platform</label>
+                        <input type="text" class="form-control @error('platform') is-invalid @enderror"
+                               id="platform" name="platform" value="{{ old('platform') }}" 
+                               placeholder="e.g., homes-pc, homes-sp, ncapp, nextcore">
+                        @error('platform')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <div class="form-text">Platform where the PR is hosted</div>
                     </div>
 
                     <div class="mb-3">

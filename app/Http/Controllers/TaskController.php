@@ -30,7 +30,8 @@ class TaskController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'repo' => 'nullable|url|max:500',
+            'pr_url' => 'nullable|url|max:500',
+            'platform' => 'nullable|string|max:100',
             'assigned_to' => 'required|exists:employees,id',
             'due_date' => 'required|date|after_or_equal:today',
             'status' => 'required|in:pending,in_progress,completed',
@@ -57,7 +58,8 @@ class TaskController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'repo' => 'nullable|url|max:500',
+            'pr_url' => 'nullable|url|max:500',
+            'platform' => 'nullable|string|max:100',
             'assigned_to' => 'required|exists:employees,id',
             'due_date' => 'required|date|after_or_equal:today',
             'status' => 'required|in:pending,in_progress,completed',
@@ -73,6 +75,13 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
+    }
+
+    public function markInProgress(Task $task)
+    {
+        $task->update(['status' => 'in_progress']);
+
+        return redirect()->route('tasks.index')->with('success', 'Task marked as in progress.');
     }
 
     public function markComplete(Task $task)
