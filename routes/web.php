@@ -101,28 +101,257 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['role:Admin,HR Manager']);
 });
 
+// Database status check route
+Route::get('/check-database-status', function() {
+    try {
+        $info = [];
+        
+        // Environment info
+        $info['environment'] = app()->environment();
+        $info['base_path'] = base_path();
+        $info['database_path_helper'] = database_path();
+        
+        // Database configuration
+        $info['db_connection'] = config('database.default');
+        $info['db_config'] = config('database.connections.' . config('database.default'));
+        
+        // File system checks
+        if (config('database.default') === 'sqlite') {
+            $dbPath = config('database.connections.sqlite.database');
+            $info['configured_db_path'] = $dbPath;
+            $info['db_file_exists'] = file_exists($dbPath);
+            $info['db_directory_exists'] = file_exists(dirname($dbPath));
+            $info['db_directory_writable'] = is_writable(dirname($dbPath));
+            
+            if (file_exists($dbPath)) {
+                $info['db_file_size'] = filesize($dbPath) . ' bytes';
+                $info['db_file_permissions'] = substr(sprintf('%o', fileperms($dbPath)), -4);
+            }
+        }
+        
+        // Connection test
+        try {
+            DB::connection()->getPdo();
+            $info['connection_status'] = 'SUCCESS';
+            
+            // Check if sessions table exists
+            try {
+                $sessionCount = DB::table('sessions')->count();
+                $info['sessions_table'] = "EXISTS (count: {$sessionCount})";
+            } catch (Exception $e) {
+                $info['sessions_table'] = 'MISSING - ' . $e->getMessage();
+            }
+            
+        } catch (Exception $e) {
+            $info['connection_status'] = 'FAILED - ' . $e->getMessage();
+        }
+        
+        return response()->json([
+            'status' => 'info',
+            'message' => 'Database status check',
+            'info' => $info,
+            'timestamp' => now()
+        ]);
+        
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Status check failed: ' . $e->getMessage(),
+            'timestamp' => now()
+        ], 500);
+    }
+});
+
+// Emergency database creation route
+Route::get('/emergency-create-database', function() {
+    try {
+        $results = [];
+        
+        // Get current environment info
+        $results[] = "Environment: " . app()->environment();
+        $results[] = "Database connection: " . config('database.default');
+        
+        // Handle SQLite database creation for production
+        if (config('database.default') === 'sqlite') {
+            // Get the configured database path
+            $configPath = config('database.connections.sqlite.database');
+            $results[] = "Configured DB path: {$configPath}";
+            
+            // For production, ensure we use the correct path
+            $dbPath = $configPath;
+            
+            // If path doesn't start with /, make it absolute from base path
+            if (!str_starts_with($dbPath, '/')) {
+                $dbPath = base_path($dbPath);
+            }
+            
+            $results[] = "Actual DB path: {$dbPath}";
+            
+            // Create database directory if it doesn't exist
+            $dbDir = dirname($dbPath);
+            if (!file_exists($dbDir)) {
+                mkdir($dbDir, 0755, true);
+                $results[] = "Created database directory: {$dbDir}";
+            } else {
+                $results[] = "Database directory exists: {$dbDir}";
+            }
+            
+            // Create SQLite database file if it doesn't exist
+            if (!file_exists($dbPath)) {
+                touch($dbPath);
+                chmod($dbPath, 0644);
+                $results[] = "Created SQLite database file: {$dbPath}";
+            } else {
+                $results[] = "Database file already exists: {$dbPath}";
+            }
+            
+            // Verify file permissions
+            $perms = substr(sprintf('%o', fileperms($dbPath)), -4);
+            $results[] = "Database file permissions: {$perms}";
+        }
+        
+        // Clear all caches first
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+        $results[] = "Cleared all caches";
+        
+        // Run migrations to create tables
+        Artisan::call('migrate', ['--force' => true]);
+        $results[] = "Ran database migrations";
+        
+        // Test database connection
+        try {
+            DB::connection()->getPdo();
+            $results[] = "Database connection test: SUCCESS";
+            
+            // Test session table specifically
+            $sessionCount = DB::table('sessions')->count();
+            $results[] = "Sessions table accessible - current count: {$sessionCount}";
+            
+        } catch (Exception $e) {
+            $results[] = "Database connection test: FAILED - " . $e->getMessage();
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Database setup completed!',
+            'details' => $results,
+            'timestamp' => now(),
+            'warning' => 'Please remove this route after use for security!'
+        ]);
+        
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Database setup failed: ' . $e->getMessage(),
+            'details' => $results ?? [],
+            'timestamp' => now()
+        ], 500);
+    }
+});
+
+// Emergency cache clearing route
+Route::get('/emergency-clear-cache', function() {
+    try {
+        $results = [];
+        
+        // Clear all caches
+        Artisan::call('cache:clear');
+        $results[] = 'Application cache cleared';
+        
+        Artisan::call('config:clear');
+        $results[] = 'Configuration cache cleared';
+        
+        Artisan::call('route:clear');
+        $results[] = 'Route cache cleared';
+        
+        Artisan::call('view:clear');
+        $results[] = 'View cache cleared';
+        
+        Artisan::call('optimize:clear');
+        $results[] = 'All compiled files cleared';
+        
+        // Optional: Clear session data
+        if (config('session.driver') === 'file') {
+            Artisan::call('session:clear');
+            $results[] = 'Session files cleared';
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'All caches cleared successfully!',
+            'details' => $results,
+            'timestamp' => now(),
+            'warning' => 'Please remove this route after use for security!'
+        ]);
+        
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Cache clearing failed: ' . $e->getMessage(),
+            'timestamp' => now()
+        ], 500);
+    }
+});
+
 // Emergency database and session fix route
 Route::get('/fix-database-emergency', function() {
-    if (app()->environment('production')) {
-        try {
-            // Clear all caches
-            Artisan::call('config:clear');
-            Artisan::call('cache:clear');
-            Artisan::call('route:clear');
-            Artisan::call('view:clear');
+    try {
+        $results = [];
+        
+        // Handle SQLite database creation
+        if (config('database.default') === 'sqlite') {
+            $dbPath = database_path('database.sqlite');
+            $dbDir = dirname($dbPath);
             
-            // Run migrations to ensure sessions table exists
-            Artisan::call('migrate', ['--force' => true]);
+            // Create database directory if it doesn't exist
+            if (!file_exists($dbDir)) {
+                mkdir($dbDir, 0755, true);
+                $results[] = "Created database directory: {$dbDir}";
+            }
             
-            // Recache config
-            Artisan::call('config:cache');
-            
-            return 'Database and cache fixed successfully! Sessions table created/updated. Please remove this route after use.';
-        } catch (Exception $e) {
-            return 'Error: ' . $e->getMessage();
+            // Create SQLite database file if it doesn't exist
+            if (!file_exists($dbPath)) {
+                touch($dbPath);
+                chmod($dbPath, 0644);
+                $results[] = "Created SQLite database file: {$dbPath}";
+            }
         }
+        
+        // Clear all caches
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('route:clear');
+        Artisan::call('view:clear');
+        $results[] = "Cleared all caches";
+        
+        // Run migrations to ensure all tables exist
+        Artisan::call('migrate', ['--force' => true]);
+        $results[] = "Ran database migrations";
+        
+        // Recache config for production
+        if (app()->environment('production')) {
+            Artisan::call('config:cache');
+            $results[] = "Cached configuration for production";
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Database and cache fixed successfully!',
+            'details' => $results,
+            'timestamp' => now(),
+            'warning' => 'Please remove this route after use for security!'
+        ]);
+        
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Fix failed: ' . $e->getMessage(),
+            'timestamp' => now()
+        ], 500);
     }
-    return 'Only available in production';
 });
 
 Route::get('/api/public-employees', function () {
