@@ -115,7 +115,12 @@ Route::get('/check-database-status', function() {
         $info['db_connection'] = config('database.default');
         $info['db_config'] = config('database.connections.' . config('database.default'));
         
-        // File system checks
+        // Environment variables
+        $info['env_db_connection'] = env('DB_CONNECTION');
+        $info['env_db_host'] = env('DB_HOST');
+        $info['env_db_database'] = env('DB_DATABASE');
+        
+        // File system checks for SQLite
         if (config('database.default') === 'sqlite') {
             $dbPath = config('database.connections.sqlite.database');
             $info['configured_db_path'] = $dbPath;
@@ -131,8 +136,9 @@ Route::get('/check-database-status', function() {
         
         // Connection test
         try {
-            DB::connection()->getPdo();
+            $pdo = DB::connection()->getPdo();
             $info['connection_status'] = 'SUCCESS';
+            $info['pdo_driver'] = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
             
             // Check if sessions table exists
             try {
@@ -170,17 +176,15 @@ Route::get('/emergency-create-database', function() {
         // Get current environment info
         $results[] = "Environment: " . app()->environment();
         $results[] = "Database connection: " . config('database.default');
+        $results[] = "ENV DB_CONNECTION: " . env('DB_CONNECTION');
         
-        // Handle SQLite database creation for production
+        // Handle different database types
         if (config('database.default') === 'sqlite') {
-            // Get the configured database path
+            // SQLite handling
             $configPath = config('database.connections.sqlite.database');
             $results[] = "Configured DB path: {$configPath}";
             
-            // For production, ensure we use the correct path
             $dbPath = $configPath;
-            
-            // If path doesn't start with /, make it absolute from base path
             if (!str_starts_with($dbPath, '/')) {
                 $dbPath = base_path($dbPath);
             }
@@ -205,9 +209,14 @@ Route::get('/emergency-create-database', function() {
                 $results[] = "Database file already exists: {$dbPath}";
             }
             
-            // Verify file permissions
             $perms = substr(sprintf('%o', fileperms($dbPath)), -4);
             $results[] = "Database file permissions: {$perms}";
+            
+        } else {
+            // PostgreSQL/MySQL handling
+            $results[] = "Using " . config('database.default') . " database - no file creation needed";
+            $results[] = "Host: " . config('database.connections.' . config('database.default') . '.host');
+            $results[] = "Database: " . config('database.connections.' . config('database.default') . '.database');
         }
         
         // Clear all caches first
@@ -223,8 +232,9 @@ Route::get('/emergency-create-database', function() {
         
         // Test database connection
         try {
-            DB::connection()->getPdo();
+            $pdo = DB::connection()->getPdo();
             $results[] = "Database connection test: SUCCESS";
+            $results[] = "PDO Driver: " . $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
             
             // Test session table specifically
             $sessionCount = DB::table('sessions')->count();
