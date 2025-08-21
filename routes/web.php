@@ -311,15 +311,35 @@ Route::get('/fix-database-emergency', function() {
     try {
         $results = [];
         
-        // Handle SQLite database creation
+        // Get current environment info
+        $results[] = "Environment: " . app()->environment();
+        $results[] = "Database connection: " . config('database.default');
+        $results[] = "Database host: " . config('database.connections.' . config('database.default') . '.host');
+        $results[] = "Database name: " . config('database.connections.' . config('database.default') . '.database');
+        $results[] = "ENV DB_CONNECTION: " . env('DB_CONNECTION');
+        $results[] = "ENV DB_HOST: " . env('DB_HOST');
+        $results[] = "ENV DB_DATABASE: " . env('DB_DATABASE');
+        
+        // Handle different database types
         if (config('database.default') === 'sqlite') {
-            $dbPath = database_path('database.sqlite');
-            $dbDir = dirname($dbPath);
+            // SQLite handling
+            $configPath = config('database.connections.sqlite.database');
+            $results[] = "Configured DB path: {$configPath}";
+            
+            $dbPath = $configPath;
+            if (!str_starts_with($dbPath, '/')) {
+                $dbPath = database_path($configPath);
+            }
+            
+            $results[] = "Actual DB path: {$dbPath}";
             
             // Create database directory if it doesn't exist
+            $dbDir = dirname($dbPath);
             if (!file_exists($dbDir)) {
                 mkdir($dbDir, 0755, true);
                 $results[] = "Created database directory: {$dbDir}";
+            } else {
+                $results[] = "Database directory exists: {$dbDir}";
             }
             
             // Create SQLite database file if it doesn't exist
@@ -327,29 +347,83 @@ Route::get('/fix-database-emergency', function() {
                 touch($dbPath);
                 chmod($dbPath, 0644);
                 $results[] = "Created SQLite database file: {$dbPath}";
+            } else {
+                $results[] = "Database file already exists: {$dbPath}";
             }
+            
+            $perms = substr(sprintf('%o', fileperms($dbPath)), -4);
+            $results[] = "Database file permissions: {$perms}";
+            
+        } else if (config('database.default') === 'pgsql') {
+            // PostgreSQL handling
+            $results[] = "Using PostgreSQL database";
+            $results[] = "Host: " . config('database.connections.pgsql.host');
+            $results[] = "Port: " . config('database.connections.pgsql.port');
+            $results[] = "Database: " . config('database.connections.pgsql.database');
+            $results[] = "Username: " . config('database.connections.pgsql.username');
+            
+            // Test PostgreSQL connection
+            try {
+                DB::connection('pgsql')->getPdo();
+                $results[] = "PostgreSQL connection test: SUCCESS";
+            } catch (Exception $e) {
+                $results[] = "PostgreSQL connection test: FAILED - " . $e->getMessage();
+            }
+        } else {
+            // MySQL/other handling
+            $results[] = "Using " . config('database.default') . " database";
+            $results[] = "Host: " . config('database.connections.' . config('database.default') . '.host');
+            $results[] = "Database: " . config('database.connections.' . config('database.default') . '.database');
         }
         
-        // Clear all caches
+        // Clear all caches first
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
         Artisan::call('route:clear');
         Artisan::call('view:clear');
         $results[] = "Cleared all caches";
         
-        // Run migrations to ensure all tables exist
-        Artisan::call('migrate', ['--force' => true]);
-        $results[] = "Ran database migrations";
+        // Run migrations to create tables
+        try {
+            Artisan::call('migrate', ['--force' => true]);
+            $results[] = "Ran database migrations successfully";
+        } catch (Exception $e) {
+            $results[] = "Migration error: " . $e->getMessage();
+        }
         
-        // Recache config for production
-        if (app()->environment('production')) {
-            Artisan::call('config:cache');
-            $results[] = "Cached configuration for production";
+        // Test database connection
+        try {
+            $pdo = DB::connection()->getPdo();
+            $results[] = "Database connection test: SUCCESS";
+            $results[] = "PDO Driver: " . $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+            
+            // Test session table specifically
+            try {
+                $sessionCount = DB::table('sessions')->count();
+                $results[] = "Sessions table accessible - current count: {$sessionCount}";
+            } catch (Exception $e) {
+                $results[] = "Sessions table error: " . $e->getMessage();
+                
+                // Try to create sessions table if it doesn't exist
+                try {
+                    Artisan::call('session:table');
+                    Artisan::call('migrate', ['--force' => true]);
+                    $results[] = "Created sessions table migration and ran it";
+                    
+                    $sessionCount = DB::table('sessions')->count();
+                    $results[] = "Sessions table now accessible - current count: {$sessionCount}";
+                } catch (Exception $e2) {
+                    $results[] = "Failed to create sessions table: " . $e2->getMessage();
+                }
+            }
+            
+        } catch (Exception $e) {
+            $results[] = "Database connection test: FAILED - " . $e->getMessage();
         }
         
         return response()->json([
             'status' => 'success',
-            'message' => 'Database and cache fixed successfully!',
+            'message' => 'Database setup completed!',
             'details' => $results,
             'timestamp' => now(),
             'warning' => 'Please remove this route after use for security!'
@@ -358,7 +432,8 @@ Route::get('/fix-database-emergency', function() {
     } catch (Exception $e) {
         return response()->json([
             'status' => 'error',
-            'message' => 'Fix failed: ' . $e->getMessage(),
+            'message' => 'Database setup failed: ' . $e->getMessage(),
+            'details' => isset($results) ? $results : [],
             'timestamp' => now()
         ], 500);
     }
