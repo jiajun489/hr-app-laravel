@@ -180,6 +180,15 @@
                 </a>
             </li>
 
+            @if(session('role') == 'HR Manager')
+            <li class="sidebar-item {{ request()->is('wellbeing*') ? 'active' : '' }}">
+                <a href="{{ route('employee.wellbeing.index') }}" class='sidebar-link'>
+                    <i class="bi bi-heart-pulse-fill"></i>
+                    <span>Wellbeing Analytics</span>
+                </a>
+            </li>
+            @endif
+
             @endif
             @if(in_array(session('role'), ['Developer', 'Accountant', 'Data Entry', 'Animator', 'Marketer']))
             <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">

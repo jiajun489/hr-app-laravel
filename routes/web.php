@@ -9,6 +9,7 @@ use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\EmployeeWellbeingController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 use App\Models\Employee;
@@ -56,6 +57,48 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['role:Admin,HR Manager']);
     Route::get('/leave_requests/reject/{id}', [LeaveRequestController::class, 'reject'])
         ->name('leave_requests.reject')
+        ->middleware(['role:Admin,HR Manager']);
+        
+    /**
+     * Employee Wellbeing Analytics routes
+     */
+    Route::get('/wellbeing', [EmployeeWellbeingController::class, 'index'])
+        ->name('employee.wellbeing.index')
+        ->middleware(['role:Admin,HR Manager']);
+    Route::get('/wellbeing/{employee}', [EmployeeWellbeingController::class, 'show'])
+        ->name('employee.wellbeing')
+        ->middleware(['role:Admin,HR Manager']);
+    Route::post('/wellbeing/{employee}/analyze', [EmployeeWellbeingController::class, 'runAnalysis'])
+        ->name('employee.wellbeing.analyze')
+        ->middleware(['role:Admin,HR Manager']);
+    
+    // Debug route to test authentication and roles
+    Route::get('/debug/auth', function() {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['error' => 'Not authenticated']);
+        }
+        
+        $employee = $user->employee;
+        if (!$employee) {
+            return response()->json(['error' => 'No employee record']);
+        }
+        
+        $role = $employee->role;
+        if (!$role) {
+            return response()->json(['error' => 'No role assigned']);
+        }
+        
+        return response()->json([
+            'user' => $user->name,
+            'email' => $user->email,
+            'employee' => $employee->fullname,
+            'role' => $role->title,
+            'can_access_wellbeing' => in_array($role->title, ['Admin', 'HR Manager', 'Developer'])
+        ]);
+    })->middleware('auth');
+    Route::post('/wellbeing/feedback/{analysis}', [EmployeeWellbeingController::class, 'storeFeedback'])
+        ->name('employee.wellbeing.feedback')
         ->middleware(['role:Admin,HR Manager']);
 
     /**
@@ -320,12 +363,38 @@ Route::get('/fix-database-emergency', function() {
         $results[] = "ENV DB_HOST: " . env('DB_HOST');
         $results[] = "ENV DB_DATABASE: " . env('DB_DATABASE');
         
-        // Handle different database types
+        // Special handling for the specific error case
         if (config('database.default') === 'sqlite') {
             // SQLite handling
             $configPath = config('database.connections.sqlite.database');
             $results[] = "Configured DB path: {$configPath}";
             
+            // Check for the specific error path
+            $errorPath = '/var/www/database/database.sqlite';
+            $results[] = "Checking for error path: {$errorPath}";
+            
+            // Try to create the error path directory and file
+            try {
+                $errorDir = dirname($errorPath);
+                if (!file_exists($errorDir)) {
+                    mkdir($errorDir, 0755, true);
+                    $results[] = "Created error directory: {$errorDir}";
+                } else {
+                    $results[] = "Error directory exists: {$errorDir}";
+                }
+                
+                if (!file_exists($errorPath)) {
+                    touch($errorPath);
+                    chmod($errorPath, 0644);
+                    $results[] = "Created SQLite database file at error path: {$errorPath}";
+                } else {
+                    $results[] = "Database file at error path already exists: {$errorPath}";
+                }
+            } catch (\Exception $e) {
+                $results[] = "Failed to create error path database: " . $e->getMessage();
+            }
+            
+            // Now handle the configured path
             $dbPath = $configPath;
             if (!str_starts_with($dbPath, '/')) {
                 $dbPath = database_path($configPath);
@@ -354,6 +423,15 @@ Route::get('/fix-database-emergency', function() {
             $perms = substr(sprintf('%o', fileperms($dbPath)), -4);
             $results[] = "Database file permissions: {$perms}";
             
+            // Try to override the database connection at runtime
+            try {
+                config(['database.connections.sqlite.database' => $dbPath]);
+                DB::purge('sqlite');
+                $results[] = "Overrode SQLite database path to: {$dbPath}";
+            } catch (\Exception $e) {
+                $results[] = "Failed to override database path: " . $e->getMessage();
+            }
+            
         } else if (config('database.default') === 'pgsql') {
             // PostgreSQL handling
             $results[] = "Using PostgreSQL database";
@@ -366,8 +444,26 @@ Route::get('/fix-database-emergency', function() {
             try {
                 DB::connection('pgsql')->getPdo();
                 $results[] = "PostgreSQL connection test: SUCCESS";
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $results[] = "PostgreSQL connection test: FAILED - " . $e->getMessage();
+                
+                // Try to switch to SQLite as fallback
+                try {
+                    config(['database.default' => 'sqlite']);
+                    $dbPath = database_path('database.sqlite');
+                    config(['database.connections.sqlite.database' => $dbPath]);
+                    
+                    // Create SQLite file if it doesn't exist
+                    if (!file_exists($dbPath)) {
+                        touch($dbPath);
+                        chmod($dbPath, 0644);
+                    }
+                    
+                    DB::purge();
+                    $results[] = "Switched to SQLite as fallback at: {$dbPath}";
+                } catch (\Exception $e2) {
+                    $results[] = "Failed to switch to SQLite: " . $e2->getMessage();
+                }
             }
         } else {
             // MySQL/other handling
@@ -387,7 +483,7 @@ Route::get('/fix-database-emergency', function() {
         try {
             Artisan::call('migrate', ['--force' => true]);
             $results[] = "Ran database migrations successfully";
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $results[] = "Migration error: " . $e->getMessage();
         }
         
@@ -401,7 +497,7 @@ Route::get('/fix-database-emergency', function() {
             try {
                 $sessionCount = DB::table('sessions')->count();
                 $results[] = "Sessions table accessible - current count: {$sessionCount}";
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $results[] = "Sessions table error: " . $e->getMessage();
                 
                 // Try to create sessions table if it doesn't exist
@@ -412,13 +508,25 @@ Route::get('/fix-database-emergency', function() {
                     
                     $sessionCount = DB::table('sessions')->count();
                     $results[] = "Sessions table now accessible - current count: {$sessionCount}";
-                } catch (Exception $e2) {
+                } catch (\Exception $e2) {
                     $results[] = "Failed to create sessions table: " . $e2->getMessage();
                 }
             }
             
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $results[] = "Database connection test: FAILED - " . $e->getMessage();
+        }
+        
+        // Check for the specific error path again
+        $errorPath = '/var/www/database/database.sqlite';
+        if (file_exists($errorPath)) {
+            $results[] = "Final check: Error path database exists";
+            $size = filesize($errorPath);
+            $results[] = "Error path database size: {$size} bytes";
+            $perms = substr(sprintf('%o', fileperms($errorPath)), -4);
+            $results[] = "Error path database permissions: {$perms}";
+        } else {
+            $results[] = "Final check: Error path database still does not exist";
         }
         
         return response()->json([
@@ -429,7 +537,7 @@ Route::get('/fix-database-emergency', function() {
             'warning' => 'Please remove this route after use for security!'
         ]);
         
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         return response()->json([
             'status' => 'error',
             'message' => 'Database setup failed: ' . $e->getMessage(),
@@ -441,6 +549,104 @@ Route::get('/fix-database-emergency', function() {
 
 Route::get('/api/public-employees', function () {
     return Response::json(Employee::select('id', 'fullname', 'email', 'department_id')->get());
+});
+
+// Database cleanup route - REMOVE AFTER USE FOR SECURITY
+Route::get('/database-cleanup', function() {
+    try {
+        $results = [];
+        $preservedEmails = ['hr@example.com', 'developer@example.com'];
+        
+        // Get the IDs of employees to preserve
+        $preservedEmployeeIds = DB::table('employees')
+            ->whereIn('email', $preservedEmails)
+            ->pluck('id')
+            ->toArray();
+            
+        $results[] = "Preserving employees with emails: " . implode(', ', $preservedEmails);
+        $results[] = "Preserved employee IDs: " . implode(', ', $preservedEmployeeIds);
+        
+        // Get the IDs of users to preserve
+        $preservedUserIds = DB::table('users')
+            ->whereIn('email', $preservedEmails)
+            ->pluck('id')
+            ->toArray();
+            
+        $results[] = "Preserved user IDs: " . implode(', ', $preservedUserIds);
+        
+        // Start transaction
+        DB::beginTransaction();
+        
+        // Delete work_life_balance_metrics for non-preserved employees
+        $count = DB::table('work_life_balance_metrics')
+            ->whereNotIn('employee_id', $preservedEmployeeIds)
+            ->delete();
+        $results[] = "Deleted {$count} work_life_balance_metrics records";
+        
+        // Delete tasks for non-preserved employees
+        $count = DB::table('tasks')
+            ->whereNotIn('assigned_to', $preservedEmployeeIds)
+            ->delete();
+        $results[] = "Deleted {$count} tasks records";
+        
+        // Delete leave_requests for non-preserved employees
+        $count = DB::table('leave_requests')
+            ->whereNotIn('employee_id', $preservedEmployeeIds)
+            ->delete();
+        $results[] = "Deleted {$count} leave_requests records";
+        
+        // Delete presences for non-preserved employees
+        $count = DB::table('presences')
+            ->whereNotIn('employee_id', $preservedEmployeeIds)
+            ->delete();
+        $results[] = "Deleted {$count} presences records";
+        
+        // Delete payrolls for non-preserved employees
+        $count = DB::table('payrolls')
+            ->whereNotIn('employee_id', $preservedEmployeeIds)
+            ->delete();
+        $results[] = "Deleted {$count} payrolls records";
+        
+        // Delete employees (except preserved ones)
+        // First, set manager_id to NULL for all employees to avoid foreign key constraints
+        DB::table('employees')
+            ->update(['manager_id' => null]);
+        $results[] = "Set manager_id to NULL for all employees";
+        
+        // Now delete non-preserved employees
+        $count = DB::table('employees')
+            ->whereNotIn('id', $preservedEmployeeIds)
+            ->delete();
+        $results[] = "Deleted {$count} employees records";
+        
+        // Delete users (except preserved ones)
+        $count = DB::table('users')
+            ->whereNotIn('id', $preservedUserIds)
+            ->delete();
+        $results[] = "Deleted {$count} users records";
+        
+        // Commit transaction
+        DB::commit();
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Database cleanup completed successfully!',
+            'details' => $results,
+            'timestamp' => now(),
+            'warning' => 'Please remove this route after use for security!'
+        ]);
+        
+    } catch (\Exception $e) {
+        // Rollback transaction on error
+        DB::rollBack();
+        
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Database cleanup failed: ' . $e->getMessage(),
+            'details' => isset($results) ? $results : [],
+            'timestamp' => now()
+        ], 500);
+    }
 });
 
 require __DIR__.'/auth.php';

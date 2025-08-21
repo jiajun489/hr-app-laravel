@@ -77,6 +77,6 @@ class Presence extends Model
             return 0;
         }
 
-        return $this->check_out->diffInHours($this->check_in);
+        return $this->check_in->diffInHours($this->check_out);
     }
 }

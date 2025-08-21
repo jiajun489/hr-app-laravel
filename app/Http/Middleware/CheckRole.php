@@ -16,40 +16,42 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
-        // Set default values following code review rules
         $user = auth()->user();
-        $employeeID = $user ? $user->employee_id : null;
         
-        // Check if employee_id exists
-        if ($employeeID === null) {
-            abort(403, 'No employee record associated with this user.');
+        // Check if user is authenticated
+        if (!$user) {
+            abort(401, 'Authentication required.');
         }
-        
-        $employee = Employee::find($employeeID);
+
+        // Get employee through the relationship (email-based)
+        $employee = $user->employee;
         
         // Check if employee exists
-        if ($employee === null) {
-            abort(403, 'Employee record not found.');
+        if (!$employee) {
+            abort(403, 'No employee record associated with this user.');
         }
         
         // Check if employee has a role
         $role = $employee->role;
-        if ($role === null) {
+        if (!$role) {
             abort(403, 'Employee has no assigned role.');
         }
         
-        // Get role title with proper null check
+        // Get role title
         $roleTitle = $role->title;
-        if ($roleTitle === null) {
+        if (!$roleTitle) {
             abort(403, 'Role title is missing.');
         }
         
+        // Store role and employee info in session
         $request->session()->put('role', $roleTitle);
         $request->session()->put('employee_id', $employee->id);
         
+        // Check if user has required role
         if (!in_array($roleTitle, $roles)) {
-            abort(403, 'Unauthorized action.');
+            abort(403, "Unauthorized action. Required roles: " . implode(', ', $roles) . ". Your role: {$roleTitle}");
         }
+        
         return $next($request);
     }
 }
