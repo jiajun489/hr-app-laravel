@@ -290,20 +290,160 @@
     @foreach($analysisHistory as $analysis)
         <!-- Recommendations Modal -->
         <div class="modal fade" id="recommendationsModal{{ $analysis->id }}" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Recommendations - {{ $analysis->created_at->format('Y-m-d') }}</h5>
+                        <h5 class="modal-title">Analysis Results - {{ $analysis->created_at->format('Y-m-d') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-info">
-                            <h6>Risk Level: <span class="badge {{ match($analysis->risk_level) { 'high' => 'bg-danger', 'medium' => 'bg-warning', 'low' => 'bg-success', default => 'bg-secondary' } }}">{{ ucfirst($analysis->risk_level) }}</span></h6>
-                            <p><strong>Categories:</strong> {{ $analysis->risk_categories }}</p>
+                        <!-- Risk Assessment Summary -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card border-{{ match($analysis->risk_level) { 'high' => 'danger', 'medium' => 'warning', 'low' => 'success', default => 'secondary' } }}">
+                                    <div class="card-body text-center">
+                                        <h3 class="text-{{ match($analysis->risk_level) { 'high' => 'danger', 'medium' => 'warning', 'low' => 'success', default => 'secondary' } }}">
+                                            {{ ucfirst($analysis->risk_level) }} Risk
+                                        </h3>
+                                        <p class="mb-0">Overall Assessment</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Risk Categories</h6>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            @if($analysis->categories)
+                                                @foreach($analysis->categories as $category)
+                                                    <span class="badge bg-info">{{ ucwords(str_replace('_', ' ', $category)) }}</span>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="recommendations">
-                            {!! nl2br(e($analysis->recommendations)) !!}
+
+                        <!-- Quantifiable Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-graph-up"></i> Quantifiable Metrics & Evidence</h6>
+                            </div>
+                            <div class="card-body">
+                                @php
+                                    // Parse pattern summary for metrics
+                                    $summary = $analysis->check_in_pattern_summary;
+                                    preg_match('/Average check-in time: (\d{2}:\d{2})/', $summary, $avgCheckIn);
+                                    preg_match('/Average check-out time: (\d{2}:\d{2})/', $summary, $avgCheckOut);
+                                    preg_match('/Average work hours: ([\d.]+)/', $summary, $avgHours);
+                                    preg_match('/Late check-ins: (\d+) instances/', $summary, $lateCheckIns);
+                                    preg_match('/Weekend work: (\d+) instances/', $summary, $weekendWork);
+                                    preg_match('/Long work days: (\d+) instances/', $summary, $longDays);
+                                    preg_match('/Most significant: (\d{2}:\d{2}) \((\d+) minutes late\)/', $summary, $latestCheckIn);
+                                @endphp
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="text-primary">Work Pattern Baseline</h6>
+                                        <ul class="list-unstyled">
+                                            @if(isset($avgCheckIn[1]))
+                                                <li><strong>Average Check-in:</strong> {{ $avgCheckIn[1] }}</li>
+                                            @endif
+                                            @if(isset($avgCheckOut[1]))
+                                                <li><strong>Average Check-out:</strong> {{ $avgCheckOut[1] }}</li>
+                                            @endif
+                                            @if(isset($avgHours[1]))
+                                                <li><strong>Average Work Hours:</strong> {{ number_format($avgHours[1], 1) }} hours/day</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-warning">Detected Anomalies</h6>
+                                        <ul class="list-unstyled">
+                                            @if(isset($lateCheckIns[1]) && $lateCheckIns[1] > 0)
+                                                <li><span class="badge bg-warning">{{ $lateCheckIns[1] }}</span> Late check-ins this month</li>
+                                            @endif
+                                            @if(isset($weekendWork[1]) && $weekendWork[1] > 0)
+                                                <li><span class="badge bg-danger">{{ $weekendWork[1] }}</span> Weekend work instances</li>
+                                            @endif
+                                            @if(isset($longDays[1]) && $longDays[1] > 0)
+                                                <li><span class="badge bg-warning">{{ $longDays[1] }}</span> Extended work days</li>
+                                            @endif
+                                            @if(isset($latestCheckIn[2]))
+                                                <li><strong>Latest arrival:</strong> {{ $latestCheckIn[1] }} ({{ $latestCheckIn[2] }} min late)</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- AI Analysis & Justification -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-cpu"></i> AI Analysis & Justification</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-light">
+                                    <h6 class="alert-heading">Key Insights</h6>
+                                    <p class="mb-0">{{ $analysis->ai_insights }}</p>
+                                </div>
+                                
+                                @php
+                                    // Calculate risk justification based on metrics
+                                    $riskFactors = [];
+                                    if(isset($weekendWork[1]) && $weekendWork[1] > 0) {
+                                        $riskFactors[] = "Weekend work detected ({$weekendWork[1]} instances) - indicates work-life balance issues";
+                                    }
+                                    if(isset($lateCheckIns[1]) && $lateCheckIns[1] > 0) {
+                                        $riskFactors[] = "Irregular check-in patterns ({$lateCheckIns[1]} late arrivals) - may indicate stress or personal issues";
+                                    }
+                                    if(isset($avgHours[1]) && $avgHours[1] > 9) {
+                                        $riskFactors[] = "Extended work hours (" . number_format($avgHours[1], 1) . " hrs/day) - above standard 8-hour workday";
+                                    }
+                                @endphp
+                                
+                                @if(!empty($riskFactors))
+                                    <h6 class="mt-3">Risk Justification</h6>
+                                    <ul>
+                                        @foreach($riskFactors as $factor)
+                                            <li>{{ $factor }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Actionable Recommendations -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-lightbulb"></i> Actionable Recommendations</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="recommendations">
+                                    {!! nl2br(e($analysis->recommendations)) !!}
+                                </div>
+                                
+                                @if($analysis->risk_level === 'high')
+                                    <div class="alert alert-danger mt-3">
+                                        <strong><i class="bi bi-exclamation-triangle"></i> Immediate Action Required</strong>
+                                        <p class="mb-0">High-risk employees require immediate HR intervention within 24-48 hours.</p>
+                                    </div>
+                                @elseif($analysis->risk_level === 'medium')
+                                    <div class="alert alert-warning mt-3">
+                                        <strong><i class="bi bi-clock"></i> Schedule Follow-up</strong>
+                                        <p class="mb-0">Medium-risk employees should be contacted within 1 week for check-in.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ $analysis->id }}" data-bs-dismiss="modal">
+                            Add Feedback
+                        </button>
                     </div>
                 </div>
             </div>

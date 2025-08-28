@@ -126,15 +126,25 @@ class EmployeeWellbeingController extends Controller
         
         try {
             // Run the analysis synchronously for immediate feedback
-            \Artisan::call('employees:analyze-patterns', [
+            $exitCode = \Artisan::call('employees:analyze-patterns', [
                 '--employee_id' => $employee->id,
                 '--notify-hr' => true,
             ]);
             
-            \Log::info('Analysis completed successfully for employee ' . $employee->id);
+            $output = \Artisan::output();
+            \Log::info('Artisan command exit code: ' . $exitCode);
+            \Log::info('Artisan command output: ' . $output);
             
-            return redirect()->route('employee.wellbeing', $employee->id)
-                ->with('success', 'Analysis completed successfully! Check the results below.');
+            if ($exitCode === 0) {
+                \Log::info('Analysis completed successfully for employee ' . $employee->id);
+                
+                return redirect()->route('employee.wellbeing', $employee->id)
+                    ->with('success', 'Analysis completed successfully! Check the results below.');
+            } else {
+                \Log::error('Artisan command failed with exit code: ' . $exitCode);
+                return redirect()->route('employee.wellbeing', $employee->id)
+                    ->with('error', 'Analysis failed with exit code: ' . $exitCode);
+            }
                 
         } catch (\Exception $e) {
             \Log::error('Error in runAnalysis: ' . $e->getMessage());

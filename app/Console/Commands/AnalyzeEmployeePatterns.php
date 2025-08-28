@@ -133,18 +133,28 @@ class AnalyzeEmployeePatterns extends Command
                     'risk_level' => $aiAnalysis['risk_level'],
                     'categories' => $aiAnalysis['categories'],
                     'recommendations' => $aiAnalysis['recommendations'],
-                    'notified_hr' => false,
+                    'notified_hr' => false, // Always reset to false for new analysis
                 ]
             );
+            
+            // Force reset notified_hr to false for manual analysis runs
+            $analysis->update(['notified_hr' => false]);
             
             $this->line("Analysis saved to database with ID: " . $analysis->id);
             
             // 4. Notify HR if requested and risk level is medium or high
             if ($notifyHR && in_array($aiAnalysis['risk_level'], ['medium', 'high'])) {
+                // print_r(11111);
+                // die;
+                $this->line("Attempting to notify HR for {$employee->fullname} (Risk: {$aiAnalysis['risk_level']})");
                 $notified = $this->slackService->notifyHR($analysis);
                 if ($notified) {
-                    $this->line("HR notified about {$employee->fullname}");
+                    $this->line("✅ HR notified about {$employee->fullname}");
+                } else {
+                    $this->line("❌ Failed to notify HR about {$employee->fullname}");
                 }
+            } else {
+                $this->line("Skipping HR notification - Risk level: {$aiAnalysis['risk_level']}, Notify HR: " . ($notifyHR ? 'true' : 'false'));
             }
         }
     }

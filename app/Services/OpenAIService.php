@@ -155,42 +155,14 @@ EOT;
      */
     private function getMockAnalysisResponse(): array
     {
-        $mockResponses = [
-            [
-                'success' => true,
-                'insights' => 'The employee has been consistently checking in late and working long hours, which may indicate increased workload or difficulty managing time.',
-                'possible_causes' => 'Increased project demands, personal stress, or potential burnout from overwork.',
-                'risk_level' => 'medium',
-                'categories' => ['workload', 'time management', 'potential burnout'],
-                'recommendations' => 'Schedule a check-in meeting to discuss workload and time management. Consider temporary workload redistribution if necessary.',
-            ],
-            [
-                'success' => true,
-                'insights' => 'The employee has been working weekends consistently for the past month, which indicates a significant work-life balance issue.',
-                'possible_causes' => 'Project deadlines, understaffing, or personal financial pressures leading to overwork.',
-                'risk_level' => 'high',
-                'categories' => ['work-life balance', 'overwork', 'burnout risk'],
-                'recommendations' => 'Immediate intervention needed. Schedule a wellbeing check-in and consider mandatory time off to prevent burnout.',
-            ],
-            [
-                'success' => true,
-                'insights' => 'The employee shows irregular check-in patterns with occasional very early starts followed by late check-ins.',
-                'possible_causes' => 'Potential personal issues affecting sleep or commute, or possible health concerns.',
-                'risk_level' => 'medium',
-                'categories' => ['irregular schedule', 'potential personal issues'],
-                'recommendations' => 'Have an informal check-in to ensure the employee has the support they need, and consider flexible working arrangements if appropriate.',
-            ],
-            [
-                'success' => true,
-                'insights' => 'No significant anomalies detected in the employee\'s check-in patterns.',
-                'possible_causes' => 'The employee appears to be maintaining a healthy work schedule.',
-                'risk_level' => 'low',
-                'categories' => ['healthy patterns'],
-                'recommendations' => 'Continue regular check-ins as part of normal management process.',
-            ],
+        // Temporarily force medium risk for testing notifications
+        return [
+            'success' => true,
+            'insights' => 'The employee has been consistently checking in late and working long hours, which may indicate increased workload or difficulty managing time.',
+            'possible_causes' => 'Increased project demands, personal stress, or potential burnout from overwork.',
+            'risk_level' => 'medium',
+            'categories' => ['workload', 'time management', 'potential burnout'],
+            'recommendations' => 'Schedule a check-in meeting to discuss workload and time management. Consider temporary workload redistribution if necessary.',
         ];
-        
-        // Return a random mock response
-        return $mockResponses[array_rand($mockResponses)];
     }
 }
