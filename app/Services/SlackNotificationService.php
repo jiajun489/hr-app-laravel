@@ -13,13 +13,9 @@ class SlackNotificationService
     
     public function __construct()
     {
-        // Hardcoded webhook URL for production testing
-        $this->webhookUrl = 'https://hooks.slack.com/services/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';
+        // TODO: Replace this with your NEW webhook URL from Slack
+        $this->webhookUrl = 'https://hooks.slack.com/services/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';
         
-        // Fallback to config if hardcoded URL is empty
-        if (empty($this->webhookUrl)) {
-            $this->webhookUrl = config('services.slack.webhook_url');
-        }
     }
     
     /**
@@ -47,6 +43,8 @@ class SlackNotificationService
                 'blocks' => $blocks
             ]);
             
+            print_r($response);
+            die;
             if ($response->successful()) {
                 // Update the analysis record to mark as notified
                 $analysis->update(['notified_hr' => true]);
