@@ -27,7 +27,7 @@ class TestSlackNotification extends Command
         $this->newLine();
 
         // Check if webhook URL is configured
-        $webhookUrl = config('services.slack.webhook_url');
+        $webhookUrl = config('services.slack.webhook_url') ?? 'https://hooks.slack.com/services/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';
         if (empty($webhookUrl)) {
             $this->warn('⚠️  Slack webhook URL not configured in .env file');
             $this->line('To set up Slack notifications:');

@@ -13,7 +13,13 @@ class SlackNotificationService
     
     public function __construct()
     {
-        $this->webhookUrl = config('services.slack.webhook_url');
+        // Hardcoded webhook URL for production testing
+        $this->webhookUrl = 'https://hooks.slack.com/services/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';
+        
+        // Fallback to config if hardcoded URL is empty
+        if (empty($this->webhookUrl)) {
+            $this->webhookUrl = config('services.slack.webhook_url');
+        }
     }
     
     /**
