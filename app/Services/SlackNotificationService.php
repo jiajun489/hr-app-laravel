@@ -42,9 +42,6 @@ class SlackNotificationService
             $response = Http::post($this->webhookUrl, [
                 'blocks' => $blocks
             ]);
-            
-            print_r($response);
-            die;
             if ($response->successful()) {
                 // Update the analysis record to mark as notified
                 $analysis->update(['notified_hr' => true]);
