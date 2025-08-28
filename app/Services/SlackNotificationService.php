@@ -14,7 +14,7 @@ class SlackNotificationService
     public function __construct()
     {
         // TODO: Replace this with your NEW webhook URL from Slack
-        $this->webhookUrl = 'https://hooks.slack.com/services/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';
+        $this->webhookUrl = 'https://hooks.slack.com/services/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';
         
     }
     
