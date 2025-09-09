@@ -24,9 +24,10 @@ class OpenAIService
      * 
      * @param string $employeeName
      * @param string $patternSummary
+     * @param string $taskWorkload
      * @return array
      */
-    public function analyzeEmployeePatterns(string $employeeName, string $patternSummary): array
+    public function analyzeEmployeePatterns(string $employeeName, string $patternSummary, string $taskWorkload = ''): array
     {
         // Check if API key is configured
         if (empty($this->apiKey)) {
@@ -34,7 +35,7 @@ class OpenAIService
             return $this->getMockAnalysisResponse();
         }
         
-        $prompt = $this->buildAnalysisPrompt($employeeName, $patternSummary);
+        $prompt = $this->buildAnalysisPrompt($employeeName, $patternSummary, $taskWorkload);
         
         Log::info('Sending request to OpenAI', [
             'employee' => $employeeName,
@@ -114,36 +115,43 @@ class OpenAIService
     /**
      * Build the prompt for analyzing employee patterns
      */
-    private function buildAnalysisPrompt(string $employeeName, string $patternSummary): string
+    private function buildAnalysisPrompt(string $employeeName, string $patternSummary, string $taskWorkload = ''): string
     {
+        $taskSection = '';
+        if (!empty($taskWorkload)) {
+            $taskSection = "\n\nTASK WORKLOAD:\n{$taskWorkload}";
+        }
+
         return <<<EOT
 Please analyze the following check-in/check-out pattern data for employee {$employeeName} and provide insights about potential wellbeing concerns.
 
 CONTEXT: This is for a digital creative studio (Reltroner Studio) with flexible work arrangements. Consider industry-specific factors like creative deadlines, project-based work, and the need for work-life balance in creative fields.
 
-DATA:
-{$patternSummary}
+ATTENDANCE DATA:
+{$patternSummary}{$taskSection}
 
-Based on these patterns, please provide:
-1. Insights about what these patterns might indicate (consider creative work cycles)
-2. Possible causes (creative burnout, project stress, client deadlines, personal difficulties, etc.)
+Based on these patterns and task workload, please provide:
+1. Insights about what these patterns might indicate (consider creative work cycles and task pressure)
+2. Possible causes (creative burnout, project stress, client deadlines, task overload, personal difficulties, etc.)
 3. Risk level assessment (low, medium, high)
-4. Categories of potential issues (be specific to creative work environment)
-5. Recommendations for HR (actionable steps for creative team management)
+4. Categories of potential issues (be specific to creative work environment and task management)
+5. Recommendations for HR (actionable steps for creative team management and workload balancing)
 
 IMPORTANT: 
 - Consider that creative work may have natural cycles of intensity
 - Weekend work might be normal during project launches
+- Correlate attendance patterns with task workload and deadlines
 - Focus on sustainable creative productivity
 - Suggest creative-specific wellness interventions
+- Consider task distribution and deadline management
 
 Format your response as a JSON object with the following structure:
 {
-  "insights": "Your analysis of the patterns considering creative work nature...",
-  "possible_causes": "Potential causes specific to creative work environment...",
+  "insights": "Your analysis of the patterns considering creative work nature and task workload...",
+  "possible_causes": "Potential causes specific to creative work environment and task pressure...",
   "risk_level": "low|medium|high",
-  "categories": ["creative_burnout", "project_stress", "client_pressure", "work_life_balance", ...],
-  "recommendations": "Specific recommendations for managing creative team wellbeing..."
+  "categories": ["creative_burnout", "project_stress", "client_pressure", "work_life_balance", "task_overload", ...],
+  "recommendations": "Specific recommendations for managing creative team wellbeing and task distribution..."
 }
 EOT;
     }
@@ -158,11 +166,11 @@ EOT;
         // Temporarily force medium risk for testing notifications
         return [
             'success' => true,
-            'insights' => 'The employee has been consistently checking in late and working long hours, which may indicate increased workload or difficulty managing time.',
-            'possible_causes' => 'Increased project demands, personal stress, or potential burnout from overwork.',
+            'insights' => 'The employee has been consistently checking in late and working long hours, which may indicate increased workload or difficulty managing time. Task analysis shows multiple pending assignments with approaching deadlines.',
+            'possible_causes' => 'Increased project demands, task overload, personal stress, or potential burnout from overwork. Multiple concurrent tasks may be creating scheduling conflicts.',
             'risk_level' => 'medium',
-            'categories' => ['workload', 'time management', 'potential burnout'],
-            'recommendations' => 'Schedule a check-in meeting to discuss workload and time management. Consider temporary workload redistribution if necessary.',
+            'categories' => ['workload', 'time management', 'potential burnout', 'task_overload'],
+            'recommendations' => 'Schedule a check-in meeting to discuss workload and time management. Consider temporary workload redistribution and task prioritization. Review task assignment process to prevent overload.',
         ];
     }
 }

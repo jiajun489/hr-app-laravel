@@ -110,7 +110,8 @@ class AnalyzeEmployeePatterns extends Command
             // Get AI analysis
             $aiAnalysis = $this->openAIService->analyzeEmployeePatterns(
                 $employee->fullname, 
-                $anomalyResults['summary']
+                $anomalyResults['summary'],
+                $anomalyResults['task_workload']
             );
             
             if (!$aiAnalysis['success']) {

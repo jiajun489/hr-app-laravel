@@ -341,10 +341,17 @@
                                     preg_match('/Weekend work: (\d+) instances/', $summary, $weekendWork);
                                     preg_match('/Long work days: (\d+) instances/', $summary, $longDays);
                                     preg_match('/Most significant: (\d{2}:\d{2}) \((\d+) minutes late\)/', $summary, $latestCheckIn);
+                                    
+                                    // Parse task workload metrics
+                                    preg_match('/Total tasks assigned: (\d+)/', $summary, $totalTasks);
+                                    preg_match('/Completed tasks: (\d+)/', $summary, $completedTasks);
+                                    preg_match('/Pending tasks: (\d+)/', $summary, $pendingTasks);
+                                    preg_match('/Overdue tasks: (\d+)/', $summary, $overdueTasks);
+                                    preg_match('/Task completion rate.*: ([\d.]+)%/', $summary, $completionRate);
                                 @endphp
                                 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <h6 class="text-primary">Work Pattern Baseline</h6>
                                         <ul class="list-unstyled">
                                             @if(isset($avgCheckIn[1]))
@@ -358,7 +365,7 @@
                                             @endif
                                         </ul>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <h6 class="text-warning">Detected Anomalies</h6>
                                         <ul class="list-unstyled">
                                             @if(isset($lateCheckIns[1]) && $lateCheckIns[1] > 0)
@@ -372,6 +379,26 @@
                                             @endif
                                             @if(isset($latestCheckIn[2]))
                                                 <li><strong>Latest arrival:</strong> {{ $latestCheckIn[1] }} ({{ $latestCheckIn[2] }} min late)</li>
+                                            @endif
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6 class="text-info">Task Workload</h6>
+                                        <ul class="list-unstyled">
+                                            @if(isset($totalTasks[1]))
+                                                <li><strong>Total Tasks:</strong> {{ $totalTasks[1] }}</li>
+                                            @endif
+                                            @if(isset($completedTasks[1]))
+                                                <li><strong>Completed:</strong> <span class="badge bg-success">{{ $completedTasks[1] }}</span></li>
+                                            @endif
+                                            @if(isset($pendingTasks[1]))
+                                                <li><strong>Pending:</strong> <span class="badge bg-warning">{{ $pendingTasks[1] }}</span></li>
+                                            @endif
+                                            @if(isset($overdueTasks[1]) && $overdueTasks[1] > 0)
+                                                <li><strong>Overdue:</strong> <span class="badge bg-danger">{{ $overdueTasks[1] }}</span></li>
+                                            @endif
+                                            @if(isset($completionRate[1]))
+                                                <li><strong>Completion Rate:</strong> {{ $completionRate[1] }}%</li>
                                             @endif
                                         </ul>
                                     </div>
@@ -401,6 +428,15 @@
                                     }
                                     if(isset($avgHours[1]) && $avgHours[1] > 9) {
                                         $riskFactors[] = "Extended work hours (" . number_format($avgHours[1], 1) . " hrs/day) - above standard 8-hour workday";
+                                    }
+                                    if(isset($overdueTasks[1]) && $overdueTasks[1] > 0) {
+                                        $riskFactors[] = "Overdue tasks detected ({$overdueTasks[1]} tasks) - indicates potential workload management issues";
+                                    }
+                                    if(isset($completionRate[1]) && $completionRate[1] < 70) {
+                                        $riskFactors[] = "Low task completion rate ({$completionRate[1]}%) - may indicate overwhelm or resource constraints";
+                                    }
+                                    if(isset($pendingTasks[1]) && isset($totalTasks[1]) && $totalTasks[1] > 0 && ($pendingTasks[1] / $totalTasks[1]) > 0.7) {
+                                        $riskFactors[] = "High pending task ratio (" . round(($pendingTasks[1] / $totalTasks[1]) * 100) . "%) - suggests task accumulation";
                                     }
                                 @endphp
                                 

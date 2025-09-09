@@ -92,9 +92,13 @@ class AnomalyDetectionService
         // Generate summary text
         $summary = $this->generateSummary($employee, $anomalies, $baselineMetrics);
         
+        // Generate task workload summary
+        $taskWorkload = $this->generateTaskWorkloadSummary($employee);
+        
         return [
             'anomalies' => $anomalies,
             'summary' => $summary,
+            'task_workload' => $taskWorkload,
             'baseline_metrics' => $baselineMetrics,
             'recent_metrics' => $this->calculateBaselineMetrics($recentPresences),
             'baseline_data_count' => $baselinePresences->count(),
@@ -396,6 +400,72 @@ class AnomalyDetectionService
             $summary .= "  Longest streak: {$longestStreak} consecutive days\n";
         }
 
+        return $summary;
+    }
+    
+    /**
+     * Generate task workload summary for the employee
+     */
+    private function generateTaskWorkloadSummary(Employee $employee): string
+    {
+        $today = Carbon::now();
+        $thirtyDaysAgo = $today->copy()->subDays(30);
+        
+        // Get tasks assigned to this employee in the last 30 days
+        $recentTasks = $employee->tasks()
+            ->where('created_at', '>=', $thirtyDaysAgo)
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        // Get overdue tasks
+        $overdueTasks = $employee->tasks()
+            ->where('status', '!=', 'completed')
+            ->where('due_date', '<', $today)
+            ->get();
+            
+        // Get pending tasks
+        $pendingTasks = $employee->tasks()
+            ->where('status', 'pending')
+            ->get();
+            
+        // Get completed tasks in last 30 days
+        $completedTasks = $employee->tasks()
+            ->where('status', 'completed')
+            ->where('updated_at', '>=', $thirtyDaysAgo)
+            ->get();
+        
+        $summary = "Task workload analysis for {$employee->fullname}:\n\n";
+        $summary .= "Recent task activity (last 30 days):\n";
+        $summary .= "- Total tasks assigned: {$recentTasks->count()}\n";
+        $summary .= "- Completed tasks: {$completedTasks->count()}\n";
+        $summary .= "- Pending tasks: {$pendingTasks->count()}\n";
+        $summary .= "- Overdue tasks: {$overdueTasks->count()}\n";
+        
+        if ($overdueTasks->count() > 0) {
+            $summary .= "\nOverdue tasks:\n";
+            foreach ($overdueTasks->take(3) as $task) {
+                $daysOverdue = $today->diffInDays($task->due_date);
+                $dueDateStr = $task->due_date instanceof \Carbon\Carbon ? $task->due_date->format('Y-m-d') : $task->due_date;
+                $summary .= "- {$task->title} (due: {$dueDateStr}, {$daysOverdue} days overdue)\n";
+            }
+        }
+        
+        if ($pendingTasks->count() > 0) {
+            $summary .= "\nUpcoming pending tasks:\n";
+            foreach ($pendingTasks->take(3) as $task) {
+                $dueDate = 'No due date';
+                if ($task->due_date) {
+                    $dueDate = $task->due_date instanceof \Carbon\Carbon ? $task->due_date->format('Y-m-d') : $task->due_date;
+                }
+                $summary .= "- {$task->title} (due: {$dueDate})\n";
+            }
+        }
+        
+        // Calculate completion rate
+        $totalRecentTasks = $recentTasks->count();
+        $completionRate = $totalRecentTasks > 0 ? round(($completedTasks->count() / $totalRecentTasks) * 100, 1) : 0;
+        $summary .= "\nTask completion rate (last 30 days): {$completionRate}%\n";
+        
         return $summary;
     }
     
