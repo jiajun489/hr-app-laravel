@@ -144,8 +144,6 @@ class AnalyzeEmployeePatterns extends Command
             
             // 4. Notify HR if requested and risk level is medium or high
             if ($notifyHR && in_array($aiAnalysis['risk_level'], ['medium', 'high'])) {
-                // print_r(11111);
-                // die;
                 $this->line("Attempting to notify HR for {$employee->fullname} (Risk: {$aiAnalysis['risk_level']})");
                 $notified = $this->slackService->notifyHR($analysis);
                 if ($notified) {
