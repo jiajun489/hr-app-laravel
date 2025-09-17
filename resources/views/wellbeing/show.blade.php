@@ -256,10 +256,12 @@
                                     <td>
                                         @if($presence->check_in && $presence->check_out)
                                             @php
-                                                $diffInHours = $presence->check_in->diffInHours($presence->check_out);
-                                                $diffInMinutes = $presence->check_in->diffInMinutes($presence->check_out) % 60;
+                                                $totalMinutes = $presence->check_in->diffInMinutes($presence->check_out);
+                                                $hours = floor($totalMinutes / 60);
+                                                $minutes = $totalMinutes % 60;
+                                                $decimalHours = number_format($totalMinutes / 60, 2);
                                             @endphp
-                                            {{ $diffInHours }}h {{ $diffInMinutes }}m
+                                            {{ $decimalHours }}h {{ $minutes }}m
                                         @else
                                             -
                                         @endif
