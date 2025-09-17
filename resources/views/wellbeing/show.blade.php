@@ -259,9 +259,8 @@
                                                 $totalMinutes = $presence->check_in->diffInMinutes($presence->check_out);
                                                 $hours = floor($totalMinutes / 60);
                                                 $minutes = $totalMinutes % 60;
-                                                $decimalHours = number_format($totalMinutes / 60, 2);
                                             @endphp
-                                            {{ $decimalHours }}h {{ $minutes }}m
+                                            {{ $hours }}h {{ $minutes }}m
                                         @else
                                             -
                                         @endif
