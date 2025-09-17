@@ -15,16 +15,38 @@ class WorkLifeBalanceMetric extends Model
         'overtime_hours',
         'consecutive_work_days',
         'leave_balance_ratio',
+        'work_life_score',
     ];
 
     protected $casts = [
         'week_start' => 'date',
         'overtime_hours' => 'decimal:2',
         'leave_balance_ratio' => 'decimal:2',
+        'work_life_score' => 'decimal:1',
     ];
 
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function getWorkLifeScoreAttribute($value)
+    {
+        return round($value, 1);
+    }
+
+    public function getScoreColorAttribute()
+    {
+        if ($this->work_life_score >= 8.0) return 'success';
+        if ($this->work_life_score >= 6.0) return 'warning';
+        return 'danger';
+    }
+
+    public function getScoreStatusAttribute()
+    {
+        if ($this->work_life_score >= 8.0) return 'Excellent';
+        if ($this->work_life_score >= 6.0) return 'Good';
+        if ($this->work_life_score >= 4.0) return 'Fair';
+        return 'Poor';
     }
 }

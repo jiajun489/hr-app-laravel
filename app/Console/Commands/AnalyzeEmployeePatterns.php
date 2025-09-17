@@ -129,7 +129,7 @@ class AnalyzeEmployeePatterns extends Command
                     'analysis_date' => Carbon::today(),
                 ],
                 [
-                    'check_in_pattern_summary' => $anomalyResults['summary'],
+                    'check_in_pattern_summary' => $anomalyResults['summary'] . "\n\n" . $anomalyResults['task_workload'],
                     'ai_insights' => $aiAnalysis['insights'],
                     'risk_level' => $aiAnalysis['risk_level'],
                     'categories' => $aiAnalysis['categories'],

@@ -101,6 +101,7 @@ class WorkLifeBalanceController extends Controller
                 'overtime_hours' => $employee->getWeeklyOvertimeHours($weekStart),
                 'consecutive_work_days' => $employee->getConsecutiveWorkDays(),
                 'leave_balance_ratio' => $employee->getLeaveBalanceRatio(),
+                'work_life_score' => $employee->calculateWorkLifeScore(),
             ]
         );
 
@@ -108,6 +109,7 @@ class WorkLifeBalanceController extends Controller
             'overtime_hours' => $employee->getWeeklyOvertimeHours($weekStart),
             'consecutive_work_days' => $employee->getConsecutiveWorkDays(),
             'leave_balance_ratio' => $employee->getLeaveBalanceRatio(),
+            'work_life_score' => $employee->calculateWorkLifeScore(),
         ]);
     }
 }

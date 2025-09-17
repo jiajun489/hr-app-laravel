@@ -647,6 +647,19 @@ Route::get('/database-cleanup', function() {
             'timestamp' => now()
         ], 500);
     }
+    /**
+     * Work-Life Balance routes
+     */
+    Route::prefix('work-life-balance')->name('work-life-balance.')->group(function () {
+        Route::get('/employee', [App\Http\Controllers\WorkLifeBalanceController::class, 'employeeDashboard'])
+            ->name('employee');
+        Route::get('/manager', [App\Http\Controllers\WorkLifeBalanceController::class, 'managerDashboard'])
+            ->middleware(['role:Admin,HR Manager'])
+            ->name('manager');
+        Route::get('/admin', [App\Http\Controllers\WorkLifeBalanceController::class, 'adminDashboard'])
+            ->middleware(['role:Admin,HR Manager'])
+            ->name('admin');
+    });
 });
 
 require __DIR__.'/auth.php';
